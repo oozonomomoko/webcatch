@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="js/operations.js"></script>
+    <script src="js/main.js"></script>
+    <title>NogiCatch</title>
+</head>
+
+<body>
+    <div class="main-container">
+        <div class="main-head">
+            <button class="btn" onclick="addStep();">添加步骤</button>
+            <label for="origin">待处理内容</label>
+            <input name="origin" id="origin">
+            <button class="btn" onclick="start();">开始</button>
+            <button class="btn" onclick="stop();">停止</button>
+        </div>
+
+        <div class="main-body">
+            <div class="main-step" id="steps">
+
+                <!-- <div class="step">
+                    <span class="description">下载文件</span>
+                    <button class="btn-s">删除</button>
+                    <button class="btn-s">添加</button>
+                    <form name="params">
+                        <input type="hidden" name="operate" value="0">
+                        <div class="params">
+                            <select name="fileNameFrom">
+                                <option value="0">自动获取文件名</option>
+                                <option value="1">随机文件名</option>
+                                <option value="2">自定义文件名</option>
+                            </select>
+                            <input type="text" name="fileName">
+                            <select name="fileTypeFrom">
+                                <option value="0">自动获取文件类型</option>
+                                <option value="1">自定义类型</option>
+                            </select>
+                            <input type="text" name="fileType">
+                            <label for="saveDir">保存路径</label>
+                            <input type="text" name="directory">
+                        </div>
+                    </form>
+                </div> -->
+
+            </div>
+        </div>
+
+        <div class="main-print"></div>
+    </div>
+    <!-- <div class="pop" id="pop">
+        <div class="pop-back"></div>
+
+        <div class="pop-main">
+            <div class="pop-head">
+                <div class="pop-close">×</div>
+                <div class="pop-title">选择操作</div>
+            </div>
+            <div class="pop-body"></div>
+        </div>
+    </div> -->
+</body>
+
+</html>
