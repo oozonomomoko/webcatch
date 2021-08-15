@@ -285,8 +285,8 @@ function start() {
         inputs.forEach(input => {
             map[input.name] = input.value;
         })
-        let curoperate =  createCopy(OPERATIONS).filter(operate => operate.operate == map.operate);
-        let checkResult = curoperate[0].check(map);
+        let curoperate = OPERATIONS.filter(operate => operate.operate == map.operate)[0];
+        let checkResult = curoperate.check(map);
         if (!checkResult.result) {
             new hugpop(checkResult).show();
             let err = form.querySelector('select[name="' + checkResult.name + '"],input[name="' + checkResult.name + '"]');
@@ -388,9 +388,6 @@ function buildConfigs(innerEle) {
     let inputs = innerEle.querySelectorAll("select,input");
     let configs = {};
     inputs.forEach(input => {
-        if (input.name.endsWith("desc")) {
-            return;
-        }
         configs[input.name] = input.value;
     })
     return configs;
@@ -399,17 +396,15 @@ function buildSettingEle(data) {
     let div = document.createElement("div");
     for (let key in data.configs) {
         let value = data.configs[key];
-        if (!key.endsWith("desc")) {
-            let configEle = document.createElement("div");
-            let label = document.createElement("label");
-            label.textContent = data.configs[key + ".desc"];
-            let valueEle = document.createElement("input");
-            valueEle.name = key;
-            valueEle.value = value;
-            configEle.appendChild(label);
-            configEle.appendChild(valueEle);
-            div.appendChild(configEle);
-        }
+        let configEle = document.createElement("div");
+        let label = document.createElement("label");
+        label.textContent = key;
+        let valueEle = document.createElement("input");
+        valueEle.name = key;
+        valueEle.value = value;
+        configEle.appendChild(label);
+        configEle.appendChild(valueEle);
+        div.appendChild(configEle);
     };
     div.className = "setting";
     return div;
@@ -488,6 +483,6 @@ function clearlog() {
     let print = document.getElementById("print");
     print.value = '';
 }
-function createCopy(obj){
+function createCopy(obj) {
     return JSON.parse(JSON.stringify(obj));
 }

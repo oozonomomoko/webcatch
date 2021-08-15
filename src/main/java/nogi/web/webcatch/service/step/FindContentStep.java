@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -29,10 +27,10 @@ public class FindContentStep extends BaseStep {
         int cssType = Integer.parseInt(operateDetail.get("cssType"));
         String attrName = VarUtil.replaceVar(operateDetail.get("attrName"), variables);
 
+        int resultType = Integer.parseInt(operateDetail.get("resultType"));
+        int nextIndex = index + 1;
         contents.forEach(content -> {
             List<String> result = RegUtil.find(content, findType, express, cssType, attrName);
-            int resultType = Integer.parseInt(operateDetail.get("resultType"));
-            int nextIndex = index + 1;
             if (resultType == 1) {
                 // 匹配结果result直接给下一步处理
                 catchStarter.submit(steps, nextIndex, result, variables);
@@ -43,10 +41,11 @@ public class FindContentStep extends BaseStep {
                     log.info("步骤：{}，未找到变量：{}，内容为：{}", index, key, content);
                     return;
                 }
-                variables.put(key, result.get(0));
+                Map<String, String> variableForSingle = new HashMap<>(variables);
+                variableForSingle.put(key, result.get(0));
                 log.info("步骤：{}，设置变量{}：{}", index, key, result.get(0));
                 // 待处理内容不变给下一步
-                catchStarter.submit(steps, nextIndex, contents, variables);
+                catchStarter.submit(steps, nextIndex, Collections.singletonList(content), variableForSingle);
             }
         });
     }

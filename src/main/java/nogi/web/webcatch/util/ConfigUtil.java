@@ -69,7 +69,6 @@ public class ConfigUtil {
         properties.putAll(collect);
         try (OutputStream out = new FileOutputStream("config.properties")) {
             properties.store(out, null);
-            refresh();
         } catch (IOException e) {
             log.error("save config error.", e);
         }
