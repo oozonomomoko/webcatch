@@ -4,7 +4,9 @@ package nogi.web.webcatch.controller;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import nogi.web.webcatch.controller.dto.BaseResponse;
+import nogi.web.webcatch.controller.dto.LogResponse;
 import nogi.web.webcatch.controller.dto.StartRequest;
+import nogi.web.webcatch.util.tail.LogListener;
 import nogi.web.webcatch.service.CatchStarter;
 import nogi.web.webcatch.service.Downloader;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,6 +30,7 @@ public class MainController {
 
     /**
      * 开始
+     *
      * @param request
      * @return
      */
@@ -46,8 +49,10 @@ public class MainController {
 
         return new BaseResponse();
     }
+
     /**
      * 开始
+     *
      * @return
      */
     @RequestMapping("/stop.do")
@@ -60,5 +65,17 @@ public class MainController {
         }
 
         return new BaseResponse(false, "正在停止...");
+    }
+
+    /**
+     * 请求日志
+     *
+     * @return
+     */
+    @RequestMapping("/log.do")
+    public LogResponse log() {
+        LogResponse logResponse = new LogResponse();
+        logResponse.setLogs(LogListener.getLog());
+        return logResponse;
     }
 }

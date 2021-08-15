@@ -34,16 +34,17 @@ public class FindContentStep extends BaseStep {
             int resultType = Integer.parseInt(operateDetail.get("resultType"));
             int nextIndex = index + 1;
             if (resultType == 1) {
-                // 给下一步处理
+                // 匹配结果result直接给下一步处理
                 catchStarter.submit(steps, nextIndex, result, variables);
             } else if (resultType == 2) {
+                // 匹配结果第一个值作为变量
                 String key = operateDetail.get("key");
                 if (CollectionUtils.isEmpty(result)) {
                     log.info("步骤：{}，未找到变量：{}", index, key);
                     return;
                 }
                 variables.put(key, result.get(0));
-                // 给下一步处理
+                // 待处理内容不变给下一步
                 catchStarter.submit(steps, nextIndex, contents, variables);
             }
         });

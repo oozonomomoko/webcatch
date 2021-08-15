@@ -28,7 +28,7 @@ public abstract class ThreadManage {
         }
         Integer coreCount = ConfigUtil.getInteger("thread." + threadName + ".count");
         WORKS = Executors.newFixedThreadPool(coreCount);
-        log.info("初始化{}线程成功", coreCount);
+        log.info("初始化{}线程成功，线程数：{}", threadName, coreCount);
         return true;
     }
 

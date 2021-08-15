@@ -82,10 +82,10 @@
 
 .main-print {
     min-height: 500px;
+    width: 95%;
     border-radius: 5px;
     background-color: rgb(29, 29, 29);
     color: white;
-    min-height: 100px;
 }
 
 .params {
@@ -98,7 +98,6 @@
 }
 
 .step {
-    margin: 5px;
     padding: 4px 7px;
     border: rgb(165, 165, 165) 1px solid;
     counter-increment: item;
@@ -122,11 +121,6 @@
     font-weight: bold;
 }
 
-.main-print {
-    margin: 5px;
-    border-radius: 5px;
-}
-
 textarea {
     width: 70%;
     display: block;
@@ -147,6 +141,7 @@ select, input {
     min-width: 150px;
     border-radius: 4px;
     vertical-align: middle;
+    margin-bottom: 3px;
 }
 
 input {

@@ -2,11 +2,9 @@ package nogi.web.webcatch.service.step;
 
 import lombok.extern.slf4j.Slf4j;
 import nogi.web.webcatch.service.CatchStarter;
-import nogi.web.webcatch.service.Downloader;
 import nogi.web.webcatch.util.VarUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;

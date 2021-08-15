@@ -210,7 +210,7 @@ var operations = [
     {
         "operate": "setPagination",
         "name": "生成分页",
-        "desc": "按照指定的变量名，将待处理内容中的{变量名}，替换为指填写范围内的所有数字，并将结果交给下一步处理",
+        "desc": "按照指定的变量名，将待处理内容中的{变量名}，替换为指填写范围内的所有数字，并将结果交给下一步处理[支持使用变量]",
         "vars": [{
             "type": "label",
             "textContent": "要替换的变量名"
@@ -244,7 +244,7 @@ var operations = [
     {
         "operate": "setHeader",
         "name": "设置请求消息头",
-        "desc": "为访问链接时的请求设置消息头，一般用于需要登录的场景设置cookie",
+        "desc": "为访问链接时的请求设置消息头，一般用于需要登录的场景设置cookie[支持使用变量]",
         "vars": [{
             "type": "label",
             "textContent": "消息头名称"

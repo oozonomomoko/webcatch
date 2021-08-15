@@ -69,7 +69,14 @@ function addStep(stepIdx) {
         base.appendChild(description);
         base.appendChild(detail);
         base.onclick = function () {
-            steps.appendChild(buildStepEle(operation));
+            let step = buildStepEle(operation);
+            steps.appendChild(step);
+            step.style.marginTop = "50px";
+            step.style.marginBottom = "50px";
+            setTimeout(function(){
+                step.style.marginTop = "0px";
+                step.style.marginBottom = "0px";
+            }, 100);
         };
         div.appendChild(base);
     })
@@ -184,3 +191,22 @@ function stop() {
         }
     })
 }
+
+$(function(){
+    let print = document.getElementById("print");
+    setInterval(() => {
+        $.ajax({
+            'url': '/main/log.do',
+            'method': 'GET',
+            'headers': {
+                Accept: "application/json; charset=UTF-8"
+            },
+            'success': function (data) {
+                if (data.logs.length == 0) {
+                    return;
+                }
+                print.value += data.logs.join('\n') + '\n';
+            }
+        })
+    }, 1000);
+})
