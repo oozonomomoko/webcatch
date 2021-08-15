@@ -32,7 +32,7 @@ public class CatchStarter extends ThreadManage {
      * @param variables
      */
     public void submit(List<Map<String, String>> steps, int index, List<String> contents, Map<String, String> variables) {
-        if (steps.size() <= index) {
+        if (steps.size() <= index || index < 0) {
             return;
         }
         Map<String, String> operateDetail = steps.get(index);

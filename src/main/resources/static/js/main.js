@@ -153,7 +153,7 @@ function addStep() {
     let parent = this.parentElement;
     let div = document.createElement("div");
     let steps = document.getElementById("steps");
-    OPERATIONS.forEach(operation => {
+    createCopy(OPERATIONS).forEach(operation => {
         // 公共元素
         let base = document.createElement("div");
         base.className = "step";
@@ -285,7 +285,7 @@ function start() {
         inputs.forEach(input => {
             map[input.name] = input.value;
         })
-        let curoperate =  Object.create(OPERATIONS).filter(operate => operate.operate == map.operate);
+        let curoperate =  createCopy(OPERATIONS).filter(operate => operate.operate == map.operate);
         let checkResult = curoperate[0].check(map);
         if (!checkResult.result) {
             new hugpop(checkResult).show();
@@ -471,7 +471,7 @@ function importSteps() {
             stepsEle.innerHTML = '';
             let config = JSON.parse(text.value);
             config.steps.forEach(step => {
-                let curoperate = Object.create(OPERATIONS).filter(operate => operate.operate == step.operate)[0];
+                let curoperate = createCopy(OPERATIONS).filter(operate => operate.operate == step.operate)[0];
                 if (curoperate.vars) {
                     curoperate.vars.forEach(variable => {
                         variable.value = step[variable.name];
@@ -487,4 +487,7 @@ function importSteps() {
 function clearlog() {
     let print = document.getElementById("print");
     print.value = '';
+}
+function createCopy(obj){
+    return JSON.parse(JSON.stringify(obj));
 }

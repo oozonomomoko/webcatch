@@ -191,63 +191,85 @@ var OPERATIONS = [
             "style": "width:500px;"
         }]
     },
+    // {
+    //     "operate": "nextPagination",
+    //     "name": "持续查找下一页",
+    //     "desc": "将代处理内容作为链接访问，从访问结果中查找下一个链接并重复此步骤，并且每次的访问结果都会交给下一步处理[支持使用变量]",
+    //     "check": function (data) {
+    //         if (!data.express) {
+    //             return { result: false, desc: "表达式内容必填", name: "express" };
+    //         }
+    //         if (2 == data.findType && 1 == data.cssType && !data.attrName) {
+    //             return { result: false, desc: "元素属性名必填", name: "attrName" };
+    //         }
+    //         return { result: true, desc: "Success" };
+    //     },
+    //     "vars": [{
+    //         "type": "label",
+    //         "textContent": "查找下一页链接"
+    //     }, {
+    //         "type": "select",
+    //         "name": "findType",
+    //         "options": [
+    //             {
+    //                 "value": "1",
+    //                 "name": "正则表达式"
+    //             }, {
+    //                 "value": "2",
+    //                 "name": "CSS选择器"
+    //             }, {
+    //                 "value": "3",
+    //                 "name": "JPath"
+    //                 // }, {
+    //                 //     "value": "4",
+    //                 //     "name": "XPath"
+    //             }
+    //         ]
+    //     }, {
+    //         "type": "input",
+    //         "name": "express",
+    //         "placeholder": "表达式内容"
+    //     }, {
+    //         "type": "select",
+    //         "name": "cssType",
+    //         "options": [
+    //             {
+    //                 "value": "1",
+    //                 "name": "获取元素属性"
+    //             }, {
+    //                 "value": "2",
+    //                 "name": "outerHTML"
+    //             }, {
+    //                 "value": "3",
+    //                 "name": "innerHTML"
+    //             }
+    //         ]
+    //     }, {
+    //         "type": "input",
+    //         "name": "attrName",
+    //         "placeholder": "元素属性名"
+    //     }]
+    // },
     {
-        "operate": "nextPagination",
-        "name": "持续查找下一页",
-        "desc": "将代处理内容作为链接访问，从访问结果中查找下一个链接并重复此步骤，并且每次的访问结果都会交给下一步处理[支持使用变量]",
+        "operate": "loop",
+        "name": "步骤回退",
+        "desc": "将代处理内容直接交给下一步，同时回退指定个数的步骤，实现循环",
         "check": function (data) {
-            if (!data.express) {
-                return { result: false, desc: "表达式内容必填", name: "express" };
+            if (!data.loopCount) {
+                return { result: false, desc: "回退步数必填", name: "loopCount" };
             }
-            if (2 == data.findType && 1 == data.cssType && !data.attrName) {
-                return { result: false, desc: "元素属性名必填", name: "attrName" };
+            if (isNaN(data.loopCount) || data.loopCount <= 0) {
+                return { result: false, desc: "回退步数需要填写正整数", name: "loopCount" };
             }
             return { result: true, desc: "Success" };
         },
         "vars": [{
             "type": "label",
-            "textContent": "查找下一页链接"
-        }, {
-            "type": "select",
-            "name": "findType",
-            "options": [
-                {
-                    "value": "1",
-                    "name": "正则表达式"
-                }, {
-                    "value": "2",
-                    "name": "CSS选择器"
-                }, {
-                    "value": "3",
-                    "name": "JPath"
-                    // }, {
-                    //     "value": "4",
-                    //     "name": "XPath"
-                }
-            ]
+            "textContent": "回退步数"
         }, {
             "type": "input",
-            "name": "express",
-            "placeholder": "表达式内容"
-        }, {
-            "type": "select",
-            "name": "cssType",
-            "options": [
-                {
-                    "value": "1",
-                    "name": "获取元素属性"
-                }, {
-                    "value": "2",
-                    "name": "outerHTML"
-                }, {
-                    "value": "3",
-                    "name": "innerHTML"
-                }
-            ]
-        }, {
-            "type": "input",
-            "name": "attrName",
-            "placeholder": "元素属性名"
+            "name": "loopCount",
+            "placeholder": "填写步数"
         }]
     },
     {
