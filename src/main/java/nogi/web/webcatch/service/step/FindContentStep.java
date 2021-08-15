@@ -40,10 +40,11 @@ public class FindContentStep extends BaseStep {
                 // 匹配结果第一个值作为变量
                 String key = operateDetail.get("key");
                 if (CollectionUtils.isEmpty(result)) {
-                    log.info("步骤：{}，未找到变量：{}", index, key);
+                    log.info("步骤：{}，未找到变量：{}，内容为：{}", index, key, content);
                     return;
                 }
                 variables.put(key, result.get(0));
+                log.info("步骤：{}，设置变量{}：{}", index, key, result.get(0));
                 // 待处理内容不变给下一步
                 catchStarter.submit(steps, nextIndex, contents, variables);
             }

@@ -3,6 +3,7 @@ package nogi.web.webcatch.service;
 import lombok.extern.slf4j.Slf4j;
 import nogi.web.webcatch.dto.Operate;
 import nogi.web.webcatch.util.ConfigUtil;
+import nogi.web.webcatch.util.RegUtil;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

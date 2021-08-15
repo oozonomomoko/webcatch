@@ -16,7 +16,7 @@ public class LogListener {
     private static ExecutorService singleThread = Executors.newSingleThreadExecutor();
 
     static {
-        singleThread.submit(() -> monitor("logs/spring.log", 5000));
+        singleThread.submit(() -> monitor("logs/spring.log", 1000));
     }
 
     /**

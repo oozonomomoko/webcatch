@@ -2,8 +2,9 @@ package nogi.web.webcatch.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONPath;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Element;
+import org.jsoup.internal.StringUtil;
 import org.jsoup.select.Elements;
 
 import java.util.*;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
  * @author 左手掐腰
  * @since 2019/10/12 17:49
  */
+@Slf4j
 public class RegUtil {
     public static final int FIND_REG = 1;
     public static final int FIND_CSS = 2;
@@ -28,7 +30,6 @@ public class RegUtil {
     public static final int CSSTYPE_INNER = 3;
 
 
-
     /**
      * 正则表达式缓存
      */
@@ -36,11 +37,17 @@ public class RegUtil {
 
     /**
      * windows文件命名不可用字符
+     * \ / :  * ? " < > |
      */
-    private static final Pattern illegal = Pattern.compile("[\\\\/:\\*\\?\"<>\\|(\\n)]");
+    private static final Pattern illegal = Pattern.compile("[\\\\\\n\\r/\\*<>|]|((?<!^\\w):)");
 
-    public static String getLegalName(String src) {
-        return illegal.matcher(src).replaceAll("");
+    public static String getLegalName(String fileName) {
+        String[] split = fileName.split("\\\\");
+        List<String> result = new ArrayList<>();
+        for (String sp : split) {
+            result.add(illegal.matcher(sp).replaceAll(""));
+        }
+        return StringUtil.join(result, "\\");
     }
 
     /**
@@ -49,21 +56,23 @@ public class RegUtil {
 
     public static List<String> find(String content, int findType, String express, int cssType, String attrName) {
         List<String> result = new ArrayList<>();
-        if (FIND_VAR == findType) {
-            result.add(express);
-            return result;
-        }
-        switch (findType) {
-            case FIND_REG:
-                result.addAll(findByReg(content, express));
-                break;
-            case FIND_CSS:
-                result.addAll(findByCss(content, express, cssType, attrName));
-                break;
-            case FIND_JSON:
-                return findByJpath(content, express);
-//            case FIND_XML:
-//                return findByXpath(content, reg);
+        try {
+            if (FIND_VAR == findType) {
+                result.add(express);
+                return result;
+            }
+            switch (findType) {
+                case FIND_REG:
+                    return findByReg(content, express);
+                case FIND_CSS:
+                    return findByCss(content, express, cssType, attrName);
+                case FIND_JSON:
+                    return findByJpath(content, express);
+//                case FIND_XML:
+//                    return findByXpath(content, express);
+            }
+        } catch (Exception e) {
+            log.error("find faild, findType:{}, express:{}", findType, express);
         }
         return result;
     }

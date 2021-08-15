@@ -37,10 +37,13 @@ public class CatchStarter extends ThreadManage {
         }
         Map<String, String> operateDetail = steps.get(index);
         if (CollectionUtils.isEmpty(contents)) {
-            log.info("步骤：{}.{}，没有待处理内容", index + 1, operateDetail.get("operate"));
+            log.info("步骤：{}.{}，没有待处理内容", index, operateDetail.get("operate"));
             return;
         }
         BaseStep operate = stepMap.get(operateDetail.get("operate") + "Step");
+        if (operate == null) {
+            log.info("步骤：{}，未找到对应步骤的实现：{}", index, operateDetail.get("operate"));
+        }
         WORKS.submit(() -> operate.process(steps, index, contents, new HashMap<>(variables)));
     }
 }

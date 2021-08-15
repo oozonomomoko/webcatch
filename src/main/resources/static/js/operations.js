@@ -1,5 +1,5 @@
 // 支持的操作类型
-var operations = [
+var OPERATIONS = [
     {
         "operate": "saveFile",
         "name": "保存内容",
@@ -172,7 +172,7 @@ var operations = [
         }]
     },
     {
-        "operate": "resetCotent",
+        "operate": "resetContent",
         "name": "重置内容",
         "desc": "重置待处理内容[支持使用变量]",
         "check": function (data) {

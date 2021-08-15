@@ -36,7 +36,8 @@ var pop = function (data) {
 
             let that = this;
             body.onclick = function () {
-                that.onclick(that);
+                if (that.onclick)
+                    that.onclick(that);
             }
             close.onclick = function () {
                 if (that.onclose)
@@ -152,7 +153,7 @@ function addStep() {
     let parent = this.parentElement;
     let div = document.createElement("div");
     let steps = document.getElementById("steps");
-    operations.forEach(operation => {
+    OPERATIONS.forEach(operation => {
         // 公共元素
         let base = document.createElement("div");
         base.className = "step";
@@ -252,7 +253,7 @@ function buildStepEle(operation) {
                 let optionEle = document.createElement("option");
                 optionEle.value = option.value;
                 optionEle.textContent = option.value + '.' + option.name;
-                optionEle.selected = option.selected;
+                optionEle.selected = variable.value == optionEle.value;
                 step.appendChild(optionEle);
             })
         }
@@ -263,16 +264,28 @@ function buildStepEle(operation) {
 
 function start() {
     let steps = [];
+    let originContents = document.getElementById("origin");
     let forms = document.querySelectorAll('#steps form');
-    for (let i in forms) {
+    if (!originContents.value) {
+        new hugpop({ result: false, desc: "未填写待处理内容" }).show();
+        $(originContents).addClass("input-error");
+        setTimeout(function () {
+            $(originContents).removeClass("input-error");
+        }, 1500);
+        return;
+    }
+    if (forms.length == 0) {
+        new hugpop({ result: false, desc: "未添加步骤" }).show();
+        return;
+    }
+    for (let i = 0; i < forms.length; i++) {
         let form = forms[i];
-        console.log(form);
         let map = {};
         let inputs = form.querySelectorAll('select,input');
         inputs.forEach(input => {
             map[input.name] = input.value;
         })
-        let curoperate = operations.filter(operate => operate.operate == map.operate);
+        let curoperate =  Object.create(OPERATIONS).filter(operate => operate.operate == map.operate);
         let checkResult = curoperate[0].check(map);
         if (!checkResult.result) {
             new hugpop(checkResult).show();
@@ -280,18 +293,17 @@ function start() {
             $(err).addClass("input-error");
             setTimeout(function () {
                 $(err).removeClass("input-error");
-            }, 1000);
+            }, 1500);
             return;
         }
         steps.push(map);
     }
-    let originContents = [document.getElementById("origin").value];
     $.ajax({
         'url': '/main/start.do',
         'method': 'POST',
         'contentType': 'application/json;charset=UTF-8',
         'data': JSON.stringify({
-            'contents': originContents,
+            'contents': [originContents.value],
             'steps': steps
         }),
         'success': function (data) {
@@ -318,21 +330,21 @@ function stop() {
 
 $(function () {
     let print = document.getElementById("print");
-    // setInterval(() => {
-    //     $.ajax({
-    //         'url': '/main/log.do',
-    //         'method': 'GET',
-    //         'headers': {
-    //             Accept: "application/json; charset=UTF-8"
-    //         },
-    //         'success': function (data) {
-    //             if (data.logs.length == 0) {
-    //                 return;
-    //             }
-    //             print.value += data.logs.join('\n') + '\n';
-    //         }
-    //     })
-    // }, 1000);
+    setInterval(() => {
+        $.ajax({
+            'url': '/main/log.do',
+            'method': 'GET',
+            'headers': {
+                Accept: "application/json; charset=UTF-8"
+            },
+            'success': function (data) {
+                if (data.logs.length == 0) {
+                    return;
+                }
+                print.value += data.logs.join('\n') + '\n';
+            }
+        })
+    }, 1000);
 })
 
 function showSetting() {
@@ -375,7 +387,7 @@ function pushSetting(configs) {
 function buildConfigs(innerEle) {
     let inputs = innerEle.querySelectorAll("select,input");
     let configs = {};
-    inputs.forEach(input=>{
+    inputs.forEach(input => {
         if (input.name.endsWith("desc")) {
             return;
         }
@@ -407,4 +419,72 @@ function buildSettingEle(data) {
 String.prototype.endsWith = function (endStr) {
     var d = this.length - endStr.length;
     return (d >= 0 && this.lastIndexOf(endStr) == d);
+}
+
+
+function exportSteps() {
+    let forms = document.querySelectorAll('#steps form');
+    if (forms.length == 0) {
+        new hugpop({ result: false, desc: "未添加步骤" }).show();
+        return;
+    }
+    let steps = [];
+    for (let i = 0; i < forms.length; i++) {
+        let form = forms[i];
+        let map = {};
+        let inputs = form.querySelectorAll('select,input');
+        inputs.forEach(input => {
+            map[input.name] = input.value;
+        })
+        steps.push(map);
+    }
+    let config = {
+        originContents: [document.getElementById("origin").value],
+        steps: steps
+    };
+
+    let text = document.createElement("textarea");
+    text.className = "configs-show";
+    text.readOnly = "readOnly";
+    text.spellcheck = "false";
+    text.value = JSON.stringify(config);
+    new pop({
+        titleStr: "导出步骤",
+        innerEle: text,
+    }).show();
+}
+function importSteps() {
+    let stepsEle = document.getElementById("steps");
+
+    let text = document.createElement("textarea");
+    text.className = "configs-show";
+    text.spellcheck = "false";
+    text.placeholder = "输入步骤配置"
+    new confirmpop({
+        "titleStr": "导入步骤",
+        "innerEle": text,
+        "confirm": function (that) {
+            if (!text.value) {
+                new hugpop({ result: false, desc: "导入失败" }).show();
+                return;
+            }
+            stepsEle.innerHTML = '';
+            let config = JSON.parse(text.value);
+            config.steps.forEach(step => {
+                let curoperate = Object.create(OPERATIONS).filter(operate => operate.operate == step.operate)[0];
+                if (curoperate.vars) {
+                    curoperate.vars.forEach(variable => {
+                        variable.value = step[variable.name];
+                    })
+                }
+                stepsEle.appendChild(buildStepEle(curoperate));
+            });
+            if (config.originContents && config.originContents.length > 0)
+                document.getElementById("origin").value = config.originContents[0];
+        }
+    }).show();
+}
+function clearlog() {
+    let print = document.getElementById("print");
+    print.value = '';
 }

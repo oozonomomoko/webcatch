@@ -33,7 +33,9 @@ public class SaveFileStep extends BaseStep {
 
         contents.forEach(url -> {
             String finalName = getNameFromUrl(url, fileNameFrom, fileName, fileTypeFrom, fileType, variables);
-            downloader.download(url, downloadDir + "\\" +  RegUtil.getLegalName(finalName));
+            String filePath = downloadDir + "\\" + finalName;
+            filePath = RegUtil.getLegalName(filePath);
+            downloader.download(url, filePath);
         });
 
     }

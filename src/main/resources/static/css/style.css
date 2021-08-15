@@ -8,7 +8,7 @@
     color: white;
     border: rgb(114, 114, 114) 1px solid;
     border-radius: 5px;
-    min-width: 100px;
+    min-width: 80px;
     min-height: 35px;
     font-size: medium;
     transition: .3s;
@@ -73,7 +73,7 @@
 .main-step {
     min-height: 500px;
     border-radius: 5px;
-    counter-reset: show-list;
+    counter-reset: item -1;
 }
 
 .main-print {
@@ -152,7 +152,6 @@ input {
 .input-error {
     background-color: #ffecec;
     border-color: #ff7a7a;
-    color: white;
 }
 
 .pop {
@@ -353,4 +352,10 @@ input {
     min-width: 25%;
     display: inline-block;
     margin-right: 10px;
+}
+.configs-show {
+    height: 400px;
+    width: 100%;
+    margin: 0 auto;
+    overflow-y: scroll;
 }

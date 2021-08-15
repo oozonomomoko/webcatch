@@ -20,6 +20,8 @@
             <input name="origin" id="origin">
             <button class="btn" onclick="start();">开始</button>
             <button class="btn" onclick="stop();">停止</button>
+            <button class="btn" onclick="importSteps();">导入</button>
+            <button class="btn" onclick="exportSteps();">导出</button>
             <button class="btn" onclick="showSetting();">设置</button>
         </div>
 
@@ -30,6 +32,7 @@
         </div>
 
         <textarea spellcheck="false" readonly class="main-print" id="print"></textarea>
+        <button class="btn" onclick="clearlog();">清除日志</button>
     </div>
 </body>
 
