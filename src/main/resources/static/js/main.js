@@ -48,12 +48,108 @@ var pop = function (data) {
         }
     }
 }
+var confirmpop = function (data) {
+    return {
+        "titleStr": data.titleStr,
+        "innerEle": data.innerEle,
+        "confirm": data.confirm,
+        "cancel": data.cancel,
+        "pop": null,
+        "show": function () {
+            let pop = document.createElement("div");
+            pop.className = "pop";
+            let back = document.createElement("div");
+            back.className = "pop-back";
+            let main = document.createElement("div");
+            main.className = "pop-main";
+            pop.appendChild(back);
+            pop.appendChild(main);
+
+            // head
+            let head = document.createElement("div");
+            head.className = "pop-head";
+            let close = document.createElement("div");
+            close.className = "pop-close";
+            close.textContent = "×";
+            let title = document.createElement("div");
+            title.className = "pop-title";
+            title.textContent = this.titleStr;
+            head.appendChild(close);
+            head.appendChild(title);
+
+            // body
+            let body = document.createElement("div");
+            body.className = "pop-body";
+            if (this.innerEle)
+                body.appendChild(this.innerEle);
+
+            // bottom
+            let bottom = document.createElement("div");
+            bottom.className = "pop-bottom";
+            let cancel = document.createElement("div");
+            cancel.className = "pop-cancel";
+            cancel.textContent = "取消";
+            let confirm = document.createElement("div");
+            confirm.className = "pop-confirm";
+            confirm.textContent = "确认";
+            bottom.appendChild(cancel);
+            bottom.appendChild(confirm);
+
+            main.appendChild(head);
+            main.appendChild(body);
+            main.appendChild(bottom);
+
+            let that = this;
+            cancel.onclick = function () {
+                if (that.close)
+                    that.close();
+                pop.remove();
+            }
+            close.onclick = cancel.onclick;
+            confirm.onclick = function () {
+                if (that.confirm)
+                    that.confirm(that);
+                pop.remove();
+            }
+            document.body.appendChild(pop);
+            this.pop = pop;
+        }
+    }
+}
+var hugpop = function (data) {
+    return {
+        "desc": data.desc,
+        "result": data.result,
+        "show": function () {
+            let pop = document.createElement("div");
+            pop.className = "hugpop";
+            let result = document.createElement("div");
+            result.className = "hugpop-result";
+            let main = document.createElement("div");
+            main.className = data.result ? "hugpop-suc" : "hugpop-err";
+            pop.appendChild(result);
+            result.appendChild(main);
+            let desc = document.createElement("div");
+            desc.className = "hugpop-desc";
+            desc.textContent = data.desc ? data.desc : (data.status + ':' + data.statusText);
+            pop.appendChild(desc);
+            document.body.appendChild(pop);
+            setTimeout(function () {
+                pop.remove();
+            }, 1900);
+        }
+    }
+}
+
+
+
 
 /**
  * 弹出框选择步骤
  * @param stepIdx 插入位置
  */
-function addStep(stepIdx) {
+function addStep() {
+    let parent = this.parentElement;
     let div = document.createElement("div");
     let steps = document.getElementById("steps");
     operations.forEach(operation => {
@@ -70,13 +166,19 @@ function addStep(stepIdx) {
         base.appendChild(detail);
         base.onclick = function () {
             let step = buildStepEle(operation);
-            steps.appendChild(step);
-            step.style.marginTop = "50px";
-            step.style.marginBottom = "50px";
-            setTimeout(function(){
-                step.style.marginTop = "0px";
+            step.style.marginTop = "10px";
+            step.style.marginBottom = "10px";
+            step.style.backgroundColor = "rgb(212 214 255)";
+            if (parent) {
+                steps.insertBefore(step, parent);
+            } else {
+                steps.appendChild(step);
+            }
+            setTimeout(function () {
+                step.style.marginTop = "1px";
                 step.style.marginBottom = "0px";
-            }, 100);
+                step.style.backgroundColor = "";
+            }, 500);
         };
         div.appendChild(base);
     })
@@ -101,7 +203,7 @@ function buildStepEle(operation) {
     del.textContent = "删除";
     let add = document.createElement("button");
     add.className = "btn-s";
-    add.textContent = "添加";
+    add.textContent = "插入↑";
     let form = document.createElement("form");
     form.name = "params";
     let params = document.createElement("div");
@@ -123,8 +225,9 @@ function buildStepEle(operation) {
         base.remove();
     };
     add.onclick = addStep;
+
     // 各步骤元素
-    if(!operation.vars) {
+    if (!operation.vars) {
         return base;
     }
     operation.vars.forEach(variable => {
@@ -132,6 +235,7 @@ function buildStepEle(operation) {
         step.name = variable.name;
         step.style = variable.style;
         if (variable.type == "input") {
+            step.autocomplete = "off";
             step.type = "text";
             if (variable.value) {
                 step.value = variable.value;
@@ -159,25 +263,42 @@ function buildStepEle(operation) {
 
 function start() {
     let steps = [];
-    $('#steps form').each((i, form) => {
+    let forms = document.querySelectorAll('#steps form');
+    for (let i in forms) {
+        let form = forms[i];
+        console.log(form);
         let map = {};
         let inputs = form.querySelectorAll('select,input');
         inputs.forEach(input => {
             map[input.name] = input.value;
         })
+        let curoperate = operations.filter(operate => operate.operate == map.operate);
+        let checkResult = curoperate[0].check(map);
+        if (!checkResult.result) {
+            new hugpop(checkResult).show();
+            let err = form.querySelector('select[name="' + checkResult.name + '"],input[name="' + checkResult.name + '"]');
+            $(err).addClass("input-error");
+            setTimeout(function () {
+                $(err).removeClass("input-error");
+            }, 1000);
+            return;
+        }
         steps.push(map);
-    })
+    }
     let originContents = [document.getElementById("origin").value];
     $.ajax({
         'url': '/main/start.do',
         'method': 'POST',
         'contentType': 'application/json;charset=UTF-8',
-        'data': JSON.stringify({ 
-            'contents':originContents,
+        'data': JSON.stringify({
+            'contents': originContents,
             'steps': steps
         }),
         'success': function (data) {
-            alert(JSON.stringify(data));
+            new hugpop(data).show();
+        },
+        'error': function (data) {
+            new hugpop(data).show();
         }
     })
 }
@@ -187,26 +308,103 @@ function stop() {
         'url': '/main/stop.do',
         'method': 'GET',
         'success': function (data) {
-            alert(JSON.stringify(data));
+            new hugpop(data).show();
+        },
+        'error': function (data) {
+            new hugpop(data).show();
         }
     })
 }
 
-$(function(){
+$(function () {
     let print = document.getElementById("print");
-    setInterval(() => {
-        $.ajax({
-            'url': '/main/log.do',
-            'method': 'GET',
-            'headers': {
-                Accept: "application/json; charset=UTF-8"
-            },
-            'success': function (data) {
-                if (data.logs.length == 0) {
-                    return;
-                }
-                print.value += data.logs.join('\n') + '\n';
-            }
-        })
-    }, 1000);
+    // setInterval(() => {
+    //     $.ajax({
+    //         'url': '/main/log.do',
+    //         'method': 'GET',
+    //         'headers': {
+    //             Accept: "application/json; charset=UTF-8"
+    //         },
+    //         'success': function (data) {
+    //             if (data.logs.length == 0) {
+    //                 return;
+    //             }
+    //             print.value += data.logs.join('\n') + '\n';
+    //         }
+    //     })
+    // }, 1000);
 })
+
+function showSetting() {
+    $.ajax({
+        'url': '/main/querySetting.do',
+        'method': 'GET',
+        'success': function (data) {
+            if (!data.configs || data.configs.length == 0) {
+                new hugpop({ result: false, desc: "异常：配置读取失败" }).show();
+            }
+
+            new confirmpop({
+                "titleStr": "设置",
+                "innerEle": buildSettingEle(data),
+                "confirm": function (that) {
+                    pushSetting(buildConfigs(that.innerEle));
+                }
+            }).show();
+        },
+        'error': function (data) {
+            new hugpop(data).show();
+        }
+    })
+}
+function pushSetting(configs) {
+    $.ajax({
+        'url': '/main/pushSetting.do',
+        'method': 'POST',
+        'contentType': 'application/json;charset=UTF-8',
+        'data': JSON.stringify({
+            'configs': configs,
+        }),
+        'success': function (data) {
+        },
+        'error': function (data) {
+            new hugpop(data).show();
+        }
+    })
+}
+function buildConfigs(innerEle) {
+    let inputs = innerEle.querySelectorAll("select,input");
+    let configs = {};
+    inputs.forEach(input=>{
+        if (input.name.endsWith("desc")) {
+            return;
+        }
+        configs[input.name] = input.value;
+    })
+    return configs;
+}
+function buildSettingEle(data) {
+    let div = document.createElement("div");
+    for (let key in data.configs) {
+        let value = data.configs[key];
+        if (!key.endsWith("desc")) {
+            let configEle = document.createElement("div");
+            let label = document.createElement("label");
+            label.textContent = data.configs[key + ".desc"];
+            let valueEle = document.createElement("input");
+            valueEle.name = key;
+            valueEle.value = value;
+            configEle.appendChild(label);
+            configEle.appendChild(valueEle);
+            div.appendChild(configEle);
+        }
+    };
+    div.className = "setting";
+    return div;
+}
+
+
+String.prototype.endsWith = function (endStr) {
+    var d = this.length - endStr.length;
+    return (d >= 0 && this.lastIndexOf(endStr) == d);
+}

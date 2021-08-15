@@ -4,7 +4,7 @@
 }
 
 .btn {
-    background-color: rgb(151 154 218);
+    background-color:rgb(114 118 224);
     color: white;
     border: rgb(114, 114, 114) 1px solid;
     border-radius: 5px;
@@ -13,10 +13,6 @@
     font-size: medium;
     transition: .3s;
     cursor: pointer;
-}
-
-.btn:hover {
-    background-color:rgb(114 118 224);
 }
 
 .btn:active {
@@ -86,6 +82,8 @@
     border-radius: 5px;
     background-color: rgb(29, 29, 29);
     color: white;
+    font-family: -webkit-body;
+
 }
 
 .params {
@@ -103,6 +101,9 @@
     counter-increment: item;
     transition: .4s;
     cursor: pointer;
+    min-height: 35px;
+    border-radius: 10px;
+    margin: 1px auto;
 }
 
 .step:before {
@@ -148,6 +149,12 @@ input {
     height: 22px;
 }
 
+.input-error {
+    background-color: #ffecec;
+    border-color: #ff7a7a;
+    color: white;
+}
+
 .pop {
     position: fixed;
     width: 100%;
@@ -159,7 +166,6 @@ input {
 .pop-main {
     background-color: white;
     position: relative;
-    min-height: 500px;
     width: 750px;
     margin: 0 auto;
     border: rgb(165, 165, 165) 1px solid;
@@ -205,4 +211,146 @@ input {
 
 .pop-body {
     border-top: rgb(165, 165, 165) 1px solid;
+}
+
+.pop-bottom {
+    height: 80px;
+    line-height: 35px;
+    color: white;
+    margin: 10px 50px 10px 50px;
+}
+.pop-cancel, .pop-confirm {
+    width: 100px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.pop-cancel:active {
+    background-color: rgb(194, 58, 58);
+}
+.pop-confirm:active {
+    background-color: rgb(78, 82, 221);
+}
+.pop-cancel {
+    background-color: rgb(202, 94, 94);
+    float: left;
+    display: inline;
+}
+.pop-confirm {
+    background-color: rgb(114, 118, 224);
+    float: right;
+    display: inline;
+}
+
+.hugpop {
+    width: 300px;
+    height: 80px;
+    box-shadow: rgb(70, 70, 70) 0 0 20px;
+    border-radius: 10px;
+    position: fixed;
+    top: 20%;
+    left: 10px;
+    text-align: center;
+    animation: hugpop 2s linear;
+    overflow: hidden;
+    background-color: white;
+}
+
+@keyframes hugpop
+{
+    0% {
+        opacity: 1;
+        width: 0px;
+    }
+    5% {
+        opacity: 1;
+        width: 300px;
+    }
+    90% {
+        opacity: 1;
+        width: 300px;
+    }
+    100% {
+        opacity: 0;
+        width: 0px;
+    }
+}
+.hugpop-result {
+    width: 80px;
+    height: 80px;
+    float: left;
+}
+.hugpop-suc {
+    width: 100%;
+    height: 100%;
+    background-color: rgb(0, 141, 7);
+    border-radius: 10px 0 0 10px;
+    color: white;
+}
+.hugpop-suc::before {
+    content: "";
+    display: inline-block;
+    position: relative;
+    width: 15px;
+    height: 30px;
+    border-bottom: solid 3px white;
+    border-right: solid 3px white;
+    transform: rotate(45deg);
+    margin: 0 auto;
+    margin-top: 15px;
+}
+.hugpop-err {
+    width: 100%;
+    height: 100%;
+    background-color: rgb(143, 5, 0);
+    border-radius: 10px 0 0 10px;
+    color: white;
+}
+.hugpop-err::before {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border-bottom: solid 3px white;
+    border-right: solid 3px white;
+    transform: rotate(45deg);
+    margin: 0 auto;
+    margin-top: 19px;
+}
+.hugpop-err::after {
+    content: "";
+    display: inline-block;
+    position: relative;
+    width: 15px;
+    height: 15px;
+    border-top: solid 3px white;
+    border-left: solid 3px white;
+    transform: rotate(45deg);
+    margin: 0 auto;
+    margin-top: 40px;
+}
+.hugpop-desc {
+    width: 220px;
+    height: 80px;
+    line-height: 80px;
+    float: left;
+    background-color: white;
+    border-radius: 0 10px 10px 0;
+}
+
+.setting div{
+    width: 100%;
+    height: 40px;
+    vertical-align: middle;
+    margin-top: 2px;
+}
+.setting label{
+    text-align: right;
+    min-width: 25%;
+    display: inline-block;
+    margin-right: 10px;
 }

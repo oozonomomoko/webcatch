@@ -42,7 +42,7 @@ public class LogListener {
         tailer.run();
     }
 
-    private static String decode(String line) {
+    public static String decode(String line) {
         char[] chs = line.toCharArray();
         byte[] be = new byte[chs.length];
         for (int i = 0; i < chs.length; i++) {

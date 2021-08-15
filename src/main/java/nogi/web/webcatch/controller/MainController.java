@@ -3,9 +3,8 @@ package nogi.web.webcatch.controller;
 
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
-import nogi.web.webcatch.controller.dto.BaseResponse;
-import nogi.web.webcatch.controller.dto.LogResponse;
-import nogi.web.webcatch.controller.dto.StartRequest;
+import nogi.web.webcatch.controller.dto.*;
+import nogi.web.webcatch.util.ConfigUtil;
 import nogi.web.webcatch.util.tail.LogListener;
 import nogi.web.webcatch.service.CatchStarter;
 import nogi.web.webcatch.service.Downloader;
@@ -16,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("main")
@@ -77,5 +78,30 @@ public class MainController {
         LogResponse logResponse = new LogResponse();
         logResponse.setLogs(LogListener.getLog());
         return logResponse;
+    }
+
+    /**
+     * 查询配置
+     *
+     * @return
+     */
+    @RequestMapping("/querySetting.do")
+    public QuerySettingResponse querySetting() {
+        Map<String, String> allConfig = ConfigUtil.getAllConfig();
+        QuerySettingResponse res = new QuerySettingResponse();
+        res.setConfigs(allConfig);
+        return res;
+    }
+
+    /**
+     * 推送配置
+     *
+     * @return
+     */
+    @RequestMapping("/pushSetting.do")
+    public BaseResponse pushSetting(@RequestBody PushSettingRequest request) {
+        Map<String, String> pushConfigs = request.getConfigs();
+        ConfigUtil.setConfig(pushConfigs);
+        return new BaseResponse();
     }
 }

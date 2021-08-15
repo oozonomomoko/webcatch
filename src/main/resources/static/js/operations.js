@@ -4,6 +4,18 @@ var operations = [
         "operate": "saveFile",
         "name": "保存内容",
         "desc": "将待处理内容作为链接访问并下载，或直接保存待处理内容[支持使用变量]",
+        "check": function (data) {
+            if (3 == data.fileNameFrom && !data.fileName) {
+                return { result: false, desc: "自定义文件名必填", name: "fileName" };
+            }
+            if (2 == data.fileTypeFrom && !data.fileType) {
+                return { result: false, desc: "自定义文件类型必填", name: "fileType" };
+            }
+            if (!data.downloadDir) {
+                return { result: false, desc: "保存路径必填", name: "downloadDir" };
+            }
+            return { result: true, desc: "Success" };
+        },
         "vars": [
             {
                 "type": "select",
@@ -12,9 +24,9 @@ var operations = [
                     {
                         "value": "1",
                         "name": "访问并下载"
-                    // }, {
-                    //     "value": "2",
-                    //     "name": "直接保存待处理内容"
+                        // }, {
+                        //     "value": "2",
+                        //     "name": "直接保存待处理内容"
                     }
                 ]
             },
@@ -67,11 +79,27 @@ var operations = [
         "operate": "getResult",
         "name": "访问链接并返回结果",
         "desc": "将待处理内容作为链接访问，并将结果给下一步处理",
+        "check": function (data) {
+            return { result: true, desc: "Success" };
+        }
     },
     {
         "operate": "findContent",
         "name": "查找内容/设置变量",
         "desc": "以各种方式在待处理内容中匹配查找，并将结果交给下一步处理，或将结果作为变量（只取查找结果的第一个值作为变量，之后的步骤中可以使用{变量名}引用变量。）",
+        "check": function (data) {
+            if (!data.express) {
+                return { result: false, desc: "表达式内容必填", name: "express" };
+            }
+
+            if (2 == data.findType && 1 == data.cssType && !data.attrName) {
+                return { result: false, desc: "元素属性名必填", name: "attrName" };
+            }
+            if (2 == data.resultType && !data.key) {
+                return { result: false, desc: "变量名必填", name: "key" };
+            }
+            return { result: true, desc: "Success" };
+        },
         "vars": [{
             "type": "label",
             "textContent": "表达式/变量值"
@@ -88,9 +116,9 @@ var operations = [
                 }, {
                     "value": "3",
                     "name": "JPath"
-                // }, {
-                //     "value": "4",
-                //     "name": "XPath"
+                    // }, {
+                    //     "value": "4",
+                    //     "name": "XPath"
                 }, {
                     "value": "5",
                     "name": "设置变量值"
@@ -147,6 +175,12 @@ var operations = [
         "operate": "resetCotent",
         "name": "重置内容",
         "desc": "重置待处理内容[支持使用变量]",
+        "check": function (data) {
+            if (!data.content) {
+                return { result: false, desc: "待处理内容必填", name: "content" };
+            }
+            return { result: true, desc: "Success" };
+        },
         "vars": [{
             "type": "label",
             "textContent": "待处理内容"
@@ -161,6 +195,15 @@ var operations = [
         "operate": "nextPagination",
         "name": "持续查找下一页",
         "desc": "将代处理内容作为链接访问，从访问结果中查找下一个链接并重复此步骤，并且每次的访问结果都会交给下一步处理[支持使用变量]",
+        "check": function (data) {
+            if (!data.express) {
+                return { result: false, desc: "表达式内容必填", name: "express" };
+            }
+            if (2 == data.findType && 1 == data.cssType && !data.attrName) {
+                return { result: false, desc: "元素属性名必填", name: "attrName" };
+            }
+            return { result: true, desc: "Success" };
+        },
         "vars": [{
             "type": "label",
             "textContent": "查找下一页链接"
@@ -177,9 +220,9 @@ var operations = [
                 }, {
                     "value": "3",
                     "name": "JPath"
-                // }, {
-                //     "value": "4",
-                //     "name": "XPath"
+                    // }, {
+                    //     "value": "4",
+                    //     "name": "XPath"
                 }
             ]
         }, {
@@ -211,6 +254,24 @@ var operations = [
         "operate": "setPagination",
         "name": "生成分页",
         "desc": "按照指定的变量名，将待处理内容中的{变量名}，替换为指填写范围内的所有数字，并将结果交给下一步处理[支持使用变量]",
+        "check": function (data) {
+            if (!data.forReplace) {
+                return { result: false, desc: "要替换的变量名必填", name: "forReplace" };
+            }
+            if (2 == data.findType && 1 == data.cssType && !data.attrName) {
+                return { result: false, desc: "元素属性名必填", name: "attrName" };
+            }
+            if (isNaN(data.from)) {
+                return { result: false, desc: "需要填写数字", name: "from" };
+            }
+            if (isNaN(data.to)) {
+                return { result: false, desc: "需要填写数字", name: "to" };
+            }
+            if (data.fixedLen && isNaN(data.fixedLen)) {
+                return { result: false, desc: "需要填写数字", name: "fixedLen" };
+            }
+            return { result: true, desc: "Success" };
+        },
         "vars": [{
             "type": "label",
             "textContent": "要替换的变量名"
@@ -245,6 +306,15 @@ var operations = [
         "operate": "setHeader",
         "name": "设置请求消息头",
         "desc": "为访问链接时的请求设置消息头，一般用于需要登录的场景设置cookie[支持使用变量]",
+        "check": function (data) {
+            if (!data.key) {
+                return { result: false, desc: "消息头名称必填", name: "key" };
+            }
+            if (!data.value) {
+                return { result: false, desc: "消息头内容必填", name: "value" };
+            }
+            return { result: true, desc: "Success" };
+        },
         "vars": [{
             "type": "label",
             "textContent": "消息头名称"
@@ -254,7 +324,7 @@ var operations = [
             "placeholder": "例如 Content-Type"
         }, {
             "type": "label",
-            "textContent": "消息头值"
+            "textContent": "消息头内容"
         }, {
             "type": "input",
             "name": "value",

@@ -20,51 +20,17 @@
             <input name="origin" id="origin">
             <button class="btn" onclick="start();">开始</button>
             <button class="btn" onclick="stop();">停止</button>
+            <button class="btn" onclick="showSetting();">设置</button>
         </div>
 
         <div class="main-body">
             <div class="main-step" id="steps">
 
-                <!-- <div class="step">
-                    <span class="description">下载文件</span>
-                    <button class="btn-s">删除</button>
-                    <button class="btn-s">添加</button>
-                    <form name="params">
-                        <input type="hidden" name="operate" value="0">
-                        <div class="params">
-                            <select name="fileNameFrom">
-                                <option value="0">自动获取文件名</option>
-                                <option value="1">随机文件名</option>
-                                <option value="2">自定义文件名</option>
-                            </select>
-                            <input type="text" name="fileName">
-                            <select name="fileTypeFrom">
-                                <option value="0">自动获取文件类型</option>
-                                <option value="1">自定义类型</option>
-                            </select>
-                            <input type="text" name="fileType">
-                            <label for="saveDir">保存路径</label>
-                            <input type="text" name="directory">
-                        </div>
-                    </form>
-                </div> -->
-
             </div>
         </div>
 
-        <textarea spellcheck="false" class="main-print" id="print"></textarea>
+        <textarea spellcheck="false" readonly class="main-print" id="print"></textarea>
     </div>
-    <!-- <div class="pop" id="pop">
-        <div class="pop-back"></div>
-
-        <div class="pop-main">
-            <div class="pop-head">
-                <div class="pop-close">×</div>
-                <div class="pop-title">选择操作</div>
-            </div>
-            <div class="pop-body"></div>
-        </div>
-    </div> -->
 </body>
 
 </html>

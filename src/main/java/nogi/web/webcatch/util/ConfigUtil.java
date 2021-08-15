@@ -1,11 +1,11 @@
 package nogi.web.webcatch.util;
 
 import lombok.extern.slf4j.Slf4j;
+import nogi.web.webcatch.util.tail.LogListener;
 
 import java.io.*;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class ConfigUtil {
@@ -29,7 +29,19 @@ public class ConfigUtil {
             log.error("read config error.", e);
         }
     }
-
+    protected static Map<String, String> toMap(Properties properties) {
+        Map<String, String> result = new HashMap<>();
+        Enumeration<?> propertyNames = properties.propertyNames();
+        while (propertyNames.hasMoreElements()) {
+            String name = (String) propertyNames.nextElement();
+            String value = LogListener.decode(properties.getProperty(name));
+            result.put(name, value);
+        }
+        return result;
+    }
+    public static Map<String, String> getAllConfig() {
+        return toMap(properties);
+    }
     public static String getConfig(String key) {
         return properties.getProperty(key);
     }
@@ -52,7 +64,9 @@ public class ConfigUtil {
         }
     }
     public static void setConfig(Map<String, String> configs) {
-        properties.putAll(configs);
+        Map<String, String> collect = configs.entrySet().stream().filter(entry -> properties.get(entry.getKey()) != null)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        properties.putAll(collect);
         try (OutputStream out = new FileOutputStream("config.properties")) {
             properties.store(out, null);
             refresh();
