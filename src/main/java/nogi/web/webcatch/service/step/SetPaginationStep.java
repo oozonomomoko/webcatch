@@ -17,7 +17,7 @@ public class SetPaginationStep extends BaseStep {
     private CatchStarter catchStarter;
 
     @Override
-    public void process(List<Map<String, String>> steps, int index, List<String> contents, Map<String, String> variables) {
+    public void process(List<Map<String, String>> steps, int index, String content, Map<String, String> variables) {
         Map<String, String> operateDetail = steps.get(index);
         int fixedLen;
         String forReplace = "\\{" + operateDetail.get("forReplace") + "\\}";
@@ -31,19 +31,19 @@ public class SetPaginationStep extends BaseStep {
         int max = Integer.parseInt(VarUtil.replaceVar(operateDetail.get("to"), variables));
 
         if (min > max) {
-            log.info("步骤：{}, 页码大小错误，from:{},to:{}", index, min, max);
+            log.error("步骤：{}, 页码大小错误，from:{},to:{}", index, min, max);
             return;
         }
 
         int nextIndex = index + 1;
-        contents.forEach(url -> {
-            List<String> temp = new ArrayList<>();
-            for (int i = min; i <= max; i++) {
-                String nexStr = url.replaceFirst(forReplace, getReplaceTarget(i, fixedLen));
-                temp.add(nexStr);
-            }
-            catchStarter.submit(steps, nextIndex, temp, variables);
-        });
+        List<String> temp = new ArrayList<>();
+        log.info("步骤：{}, 开始生成页码，from:{},to:{}", index, min, max);
+        for (int i = min; i <= max; i++) {
+            String nexStr = content.replaceFirst(forReplace, getReplaceTarget(i, fixedLen));
+            temp.add(nexStr);
+        }
+        log.info("步骤：{}, 页码生成完毕，from:{},to:{}", index, min, max);
+        catchStarter.submit(steps, nextIndex, temp, variables);
     }
 
     private static String getReplaceTarget(int num, int fixedLen) {

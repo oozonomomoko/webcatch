@@ -20,12 +20,12 @@ public class SetHeaderStep extends BaseStep {
     private CatchStarter catchStarter;
 
     @Override
-    public void process(List<Map<String, String>> steps, int index, List<String> contents, Map<String, String> variables) {
+    public void process(List<Map<String, String>> steps, int index, String content, Map<String, String> variables) {
         Map<String, String> operateDetail = steps.get(index);
         String key = VarUtil.replaceVar(operateDetail.get("key"), variables);
         String value = VarUtil.replaceVar(operateDetail.get("value"), variables);
         Downloader.headers.put(key, value);
         int nextIndex = index + 1;
-        catchStarter.submit(steps, nextIndex, contents, variables);
+        catchStarter.submit(steps, nextIndex, content, variables);
     }
 }

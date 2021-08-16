@@ -13,6 +13,6 @@ public abstract class BaseStep {
      * @param contents 待处理内容
      * @param variables 变量
      */
-    public abstract void process(List<Map<String, String>> steps, int index, List<String> contents, Map<String, String> variables);
+    public abstract void process(List<Map<String, String>> steps, int index, String contents, Map<String, String> variables);
 
 }

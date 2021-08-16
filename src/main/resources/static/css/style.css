@@ -139,7 +139,7 @@ select, input {
     border: rgb(165, 165, 165) 1px solid;
     outline: none;
     height: 25px;
-    min-width: 150px;
+    min-width: 100px;
     border-radius: 4px;
     vertical-align: middle;
     margin-bottom: 3px;

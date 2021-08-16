@@ -20,14 +20,13 @@ public class GetResultStep extends BaseStep {
     private CatchStarter catchStarter;
 
     @Override
-    public void process(List<Map<String, String>> steps, int index, List<String> contents, Map<String, String> variables) {
+    public void process(List<Map<String, String>> steps, int index, String content, Map<String, String> variables) {
+        Document doc = downloader.getDoc(content);
+        if (doc == null) {
+            log.error("步骤{}，访问链接失败：{}", index, content);
+            return;
+        }
         int nextIndex = index + 1;
-        contents.forEach(url -> {
-            Document doc = downloader.getDoc(url);
-            if (doc == null) {
-                return;
-            }
-            catchStarter.submit(steps, nextIndex, Collections.singletonList(doc.outerHtml()), variables);
-        });
+        catchStarter.submit(steps, nextIndex, doc.outerHtml(), variables);
     }
 }

@@ -20,10 +20,9 @@ public class SaveFileStep extends BaseStep {
     private Downloader downloader;
 
     @Override
-    public void process(List<Map<String, String>> steps, int index, List<String> contents, Map<String, String> variables) {
+    public void process(List<Map<String, String>> steps, int index, String content, Map<String, String> variables) {
         Map<String, String> operateDetail = steps.get(index);
         String downloadType = operateDetail.get("downloadType");
-
 
         int fileNameFrom = Integer.parseInt(operateDetail.get("fileNameFrom"));
         String fileName = VarUtil.replaceVar(operateDetail.get("fileName"), variables);
@@ -31,13 +30,10 @@ public class SaveFileStep extends BaseStep {
         String fileType = VarUtil.replaceVar(operateDetail.get("fileType"), variables);
         String downloadDir = VarUtil.replaceVar(operateDetail.get("downloadDir"), variables);
 
-        contents.forEach(url -> {
-            String finalName = getNameFromUrl(url, fileNameFrom, fileName, fileTypeFrom, fileType, variables);
-            String filePath = downloadDir + "\\" + finalName;
-            filePath = RegUtil.getLegalName(filePath);
-            downloader.download(url, filePath);
-        });
-
+        String finalName = getNameFromUrl(content, fileNameFrom, fileName, fileTypeFrom, fileType, variables);
+        String filePath = downloadDir + "\\" + finalName;
+        filePath = RegUtil.getLegalName(filePath);
+        downloader.download(content, filePath);
     }
 
     /**

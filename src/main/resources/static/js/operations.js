@@ -2,8 +2,8 @@
 var OPERATIONS = [
     {
         "operate": "saveFile",
-        "name": "保存内容",
-        "desc": "将待处理内容作为链接访问并下载，或直接保存待处理内容[支持使用变量]",
+        "name": "保存文件",
+        "desc": "将内容当做链接访问，并保存为文件[支持引用变量]",
         "check": function (data) {
             if (3 == data.fileNameFrom && !data.fileName) {
                 return { result: false, desc: "自定义文件名必填", name: "fileName" };
@@ -77,16 +77,16 @@ var OPERATIONS = [
     },
     {
         "operate": "getResult",
-        "name": "访问链接并返回结果",
-        "desc": "将待处理内容作为链接访问，并将结果给下一步处理",
+        "name": "访问链接",
+        "desc": "将内容当做链接访问，并且将结果交给下一步处理",
         "check": function (data) {
             return { result: true, desc: "Success" };
         }
     },
     {
         "operate": "findContent",
-        "name": "查找内容/设置变量",
-        "desc": "以各种方式在待处理内容中匹配查找，并将结果交给下一步处理，或将结果作为变量（只取查找结果的第一个值作为变量，之后的步骤中可以使用{变量名}引用变量。）",
+        "name": "查找内容",
+        "desc": "在内容中查找字符，并且将结果交给下一步处理。查找方式支持正则表达式，CSS选择器，jpath等[支持引用变量]",
         "check": function (data) {
             if (!data.express) {
                 return { result: false, desc: "表达式内容必填", name: "express" };
@@ -95,14 +95,11 @@ var OPERATIONS = [
             if (2 == data.findType && 1 == data.cssType && !data.attrName) {
                 return { result: false, desc: "元素属性名必填", name: "attrName" };
             }
-            if (2 == data.resultType && !data.key) {
-                return { result: false, desc: "变量名必填", name: "key" };
-            }
             return { result: true, desc: "Success" };
         },
         "vars": [{
             "type": "label",
-            "textContent": "表达式/变量值"
+            "textContent": "表达式"
         }, {
             "type": "select",
             "name": "findType",
@@ -119,16 +116,16 @@ var OPERATIONS = [
                     // }, {
                     //     "value": "4",
                     //     "name": "XPath"
-                }, {
-                    "value": "5",
-                    "name": "设置变量值"
                 }
             ]
         }, {
             "type": "input",
             "name": "express",
-            "placeholder": "表达式内容/变量值"
+            "placeholder": "表达式内容"
         }, {
+            "type": "label",
+            "textContent": "CSS选择器额外操作"
+        },{
             "type": "select",
             "name": "cssType",
             "options": [
@@ -147,34 +144,91 @@ var OPERATIONS = [
             "type": "input",
             "name": "attrName",
             "placeholder": "元素属性名"
-        }, {
+        }]
+    },
+    {
+        "operate": "setVariable",
+        "name": "设置变量",
+        "desc": "新增一个变量，对后续步骤生效。变量值可从内容查找，查找方式同[查找内容]，查找失败则中断流程，也支持直接定义变量值。（只取查找结果的第一个值作为变量，之后的步骤中可以用{变量名}的方式引用变量。）[支持引用变量]",
+        "check": function (data) {
+            if (!data.express) {
+                return { result: false, desc: "表达式内容必填", name: "express" };
+            }
+
+            if (2 == data.findType && 1 == data.cssType && !data.attrName) {
+                return { result: false, desc: "元素属性名必填", name: "attrName" };
+            }
+            if (2 == data.resultType && !data.key) {
+                return { result: false, desc: "变量名必填", name: "key" };
+            }
+            return { result: true, desc: "Success" };
+        },
+        "vars": [{
             "type": "label",
-            "textContent": "处理方式"
+            "textContent": "变量名称"
+        }, {
+            "type": "input",
+            "name": "key",
+            "placeholder": "变量名称"
+        },{
+            "type": "label",
+            "textContent": "变量值"
         }, {
             "type": "select",
-            "name": "resultType",
+            "name": "findType",
             "options": [
                 {
                     "value": "1",
-                    "name": "给下一步处理"
+                    "name": "正则表达式"
                 }, {
                     "value": "2",
-                    "name": "作为变量"
+                    "name": "CSS选择器"
+                }, {
+                    "value": "3",
+                    "name": "JPath"
+                    // }, {
+                    //     "value": "4",
+                    //     "name": "XPath"
+                }, {
+                    "value": "5",
+                    "name": "自定义变量值"
+                }
+            ]
+        }, {
+            "type": "input",
+            "name": "express",
+            "placeholder": "表达式内容/变量值"
+        }, {
+            "type": "label",
+            "textContent": "CSS选择器额外操作"
+        }, {
+            "type": "select",
+            "name": "cssType",
+            "options": [
+                {
+                    "value": "1",
+                    "name": "获取元素属性"
+                }, {
+                    "value": "2",
+                    "name": "outerHTML"
+                }, {
+                    "value": "3",
+                    "name": "innerHTML"
                 }
             ]
         }, {
             "type": "label",
-            "textContent": "变量名"
+            "textContent": "元素属性名"
         }, {
             "type": "input",
-            "name": "key",
-            "placeholder": "作为变量时填写"
+            "name": "attrName",
+            "placeholder": "获取元素属性时填写"
         }]
     },
     {
         "operate": "resetContent",
         "name": "重置内容",
-        "desc": "重置待处理内容[支持使用变量]",
+        "desc": "重置待处理内容[支持引用变量]",
         "check": function (data) {
             if (!data.content) {
                 return { result: false, desc: "待处理内容必填", name: "content" };
@@ -191,69 +245,10 @@ var OPERATIONS = [
             "style": "width:500px;"
         }]
     },
-    // {
-    //     "operate": "nextPagination",
-    //     "name": "持续查找下一页",
-    //     "desc": "将代处理内容作为链接访问，从访问结果中查找下一个链接并重复此步骤，并且每次的访问结果都会交给下一步处理[支持使用变量]",
-    //     "check": function (data) {
-    //         if (!data.express) {
-    //             return { result: false, desc: "表达式内容必填", name: "express" };
-    //         }
-    //         if (2 == data.findType && 1 == data.cssType && !data.attrName) {
-    //             return { result: false, desc: "元素属性名必填", name: "attrName" };
-    //         }
-    //         return { result: true, desc: "Success" };
-    //     },
-    //     "vars": [{
-    //         "type": "label",
-    //         "textContent": "查找下一页链接"
-    //     }, {
-    //         "type": "select",
-    //         "name": "findType",
-    //         "options": [
-    //             {
-    //                 "value": "1",
-    //                 "name": "正则表达式"
-    //             }, {
-    //                 "value": "2",
-    //                 "name": "CSS选择器"
-    //             }, {
-    //                 "value": "3",
-    //                 "name": "JPath"
-    //                 // }, {
-    //                 //     "value": "4",
-    //                 //     "name": "XPath"
-    //             }
-    //         ]
-    //     }, {
-    //         "type": "input",
-    //         "name": "express",
-    //         "placeholder": "表达式内容"
-    //     }, {
-    //         "type": "select",
-    //         "name": "cssType",
-    //         "options": [
-    //             {
-    //                 "value": "1",
-    //                 "name": "获取元素属性"
-    //             }, {
-    //                 "value": "2",
-    //                 "name": "outerHTML"
-    //             }, {
-    //                 "value": "3",
-    //                 "name": "innerHTML"
-    //             }
-    //         ]
-    //     }, {
-    //         "type": "input",
-    //         "name": "attrName",
-    //         "placeholder": "元素属性名"
-    //     }]
-    // },
     {
         "operate": "loop",
         "name": "步骤回退",
-        "desc": "将代处理内容直接交给下一步，同时回退指定个数的步骤，实现循环",
+        "desc": "回退指定步数以实现循环，直到循环内流程中断没有内容处理。步骤回退同时会将内容交给下一步处理",
         "check": function (data) {
             if (!data.loopCount) {
                 return { result: false, desc: "回退步数必填", name: "loopCount" };
@@ -327,7 +322,7 @@ var OPERATIONS = [
     {
         "operate": "setHeader",
         "name": "设置请求消息头",
-        "desc": "为访问链接时的请求设置消息头，一般用于需要登录的场景设置cookie[支持使用变量]",
+        "desc": "对http请求消息头进行设置，支持引用变量[支持引用变量]",
         "check": function (data) {
             if (!data.key) {
                 return { result: false, desc: "消息头名称必填", name: "key" };

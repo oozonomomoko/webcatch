@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,12 +26,10 @@ public class CatchStarter extends ThreadManage {
         return "catch";
     }
 
-    /**
-     * @param steps
-     * @param index
-     * @param contents
-     * @param variables
-     */
+    public void submit(List<Map<String, String>> steps, int index, String content, Map<String, String> variables) {
+        submit(steps, index, Collections.singletonList(content), variables);
+    }
+
     public void submit(List<Map<String, String>> steps, int index, List<String> contents, Map<String, String> variables) {
         if (steps.size() <= index || index < 0) {
             return;
@@ -43,7 +42,10 @@ public class CatchStarter extends ThreadManage {
         BaseStep operate = stepMap.get(operateDetail.get("operate") + "Step");
         if (operate == null) {
             log.info("步骤：{}，未找到对应步骤的实现：{}", index, operateDetail.get("operate"));
+            return;
         }
-        WORKS.submit(() -> operate.process(steps, index, contents, new HashMap<>(variables)));
+
+        contents.forEach(content-> WORKS.submit(() -> operate.process(steps, index, content, new HashMap<>(variables))));
+
     }
 }

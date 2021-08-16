@@ -37,7 +37,7 @@ public abstract class ThreadManage {
             log.info("{}线程已停止", getThreadName());
             return true;
         }
-        WORKS.shutdown();
+        WORKS.shutdownNow();
         log.info("尝试停止{}线程...", getThreadName());
         return false;
     }
