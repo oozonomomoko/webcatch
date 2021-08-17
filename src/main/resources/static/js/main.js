@@ -205,6 +205,12 @@ function buildStepEle(operation) {
     let add = document.createElement("button");
     add.className = "btn-s";
     add.textContent = "插入↑";
+    let up = document.createElement("button");
+    up.className = "btn-s";
+    up.textContent = "向上移动";
+    let down = document.createElement("button");
+    down.className = "btn-s";
+    down.textContent = "向下移动";
     let form = document.createElement("form");
     form.name = "params";
     let params = document.createElement("div");
@@ -214,6 +220,8 @@ function buildStepEle(operation) {
     base.appendChild(description);
     base.appendChild(add);
     base.appendChild(del);
+    base.appendChild(up);
+    base.appendChild(down);
     base.appendChild(form);
 
     let operate = document.createElement("input");
@@ -237,6 +245,7 @@ function buildStepEle(operation) {
         step.style = variable.style;
         if (variable.type == "input") {
             step.autocomplete = "off";
+            step.spellcheck = "false";
             step.type = "text";
             if (variable.value) {
                 step.value = variable.value;
@@ -254,10 +263,27 @@ function buildStepEle(operation) {
                 optionEle.value = option.value;
                 optionEle.textContent = option.value + '.' + option.name;
                 optionEle.selected = variable.value == optionEle.value;
+                if (option.show) {
+                    $(step).change(function () {
+                        if (optionEle.selected) {
+                            $(base).find(option.show).show();
+                        }
+                    });
+                }
+                if (option.hide) {
+                    $(step).change(function () {
+                        if (optionEle.selected) {
+                            $(base).find(option.hide).hide();
+                        }
+                    });
+                }
                 step.appendChild(optionEle);
             })
         }
         params.appendChild(step);
+    });
+    Array.from(base.querySelectorAll("select")).reverse().forEach(sel => {
+        $(sel).change();
     });
     return base;
 }
@@ -342,6 +368,7 @@ $(function () {
                     return;
                 }
                 print.value += data.logs.join('\n') + '\n';
+                print.scrollTop = print.scrollHeight
             }
         })
     }, 1000);
@@ -448,6 +475,7 @@ function exportSteps() {
         innerEle: text,
     }).show();
 }
+
 function importSteps() {
     let stepsEle = document.getElementById("steps");
 
@@ -485,4 +513,15 @@ function clearlog() {
 }
 function createCopy(obj) {
     return JSON.parse(JSON.stringify(obj));
+}
+
+function switchShow() {
+    let steps = document.getElementById("steps");
+    if (steps.style.height == "150px") {
+        steps.style.height = "";
+        steps.style.overflow = "";
+    } else {
+        steps.style.height = "150px";
+        steps.style.overflow = "hidden";
+    }
 }

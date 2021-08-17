@@ -36,13 +36,16 @@ var OPERATIONS = [
                 "options": [
                     {
                         "value": "1",
-                        "name": "文件名-自动获取"
+                        "name": "文件名-自动获取",
+                        "hide":"input[name=fileName]"
                     }, {
                         "value": "2",
-                        "name": "文件名-随机"
+                        "name": "文件名-随机",
+                        "hide":"input[name=fileName]"
                     }, {
                         "value": "3",
-                        "name": "文件名-自定义"
+                        "name": "文件名-自定义",
+                        "show":"input[name=fileName]"
                     }
                 ]
             }, {
@@ -55,16 +58,19 @@ var OPERATIONS = [
                 "options": [
                     {
                         "value": "1",
-                        "name": "文件类型-自动获取"
+                        "name": "文件类型-自动获取",
+                        "hide":"input[name=fileType]"
                     }, {
                         "value": "2",
-                        "name": "文件类型-自定义"
+                        "name": "文件类型-自定义",
+                        "show":"input[name=fileType]"
                     }
                 ]
             }, {
                 "type": "input",
                 "name": "fileType",
-                "placeholder": "自定义时填写,例如.jpg"
+                "placeholder": "文件类型,如.jpg",
+                "style":"width:50px;"
             }, {
                 "type": "label",
                 "textContent": "保存路径"
@@ -99,45 +105,45 @@ var OPERATIONS = [
         },
         "vars": [{
             "type": "label",
-            "textContent": "表达式"
+            "textContent": "查找方式"
         }, {
             "type": "select",
             "name": "findType",
             "options": [
                 {
                     "value": "1",
-                    "name": "正则表达式"
+                    "name": "正则表达式",
+                    "hide":"select[name=cssType],input[name=attrName]"
                 }, {
                     "value": "2",
-                    "name": "CSS选择器"
+                    "name": "CSS选择器",
+                    "show":"select[name=cssType],input[name=attrName]"
                 }, {
                     "value": "3",
-                    "name": "JPath"
-                    // }, {
-                    //     "value": "4",
-                    //     "name": "XPath"
+                    "name": "JPath",
+                    "hide":"select[name=cssType],input[name=attrName]"
                 }
             ]
         }, {
             "type": "input",
             "name": "express",
             "placeholder": "表达式内容"
-        }, {
-            "type": "label",
-            "textContent": "CSS选择器额外操作"
         },{
             "type": "select",
             "name": "cssType",
             "options": [
                 {
                     "value": "1",
-                    "name": "获取元素属性"
+                    "name": "获取元素属性",
+                    "show":"input[name=attrName]"
                 }, {
                     "value": "2",
-                    "name": "outerHTML"
+                    "name": "outerHTML",
+                    "hide":"input[name=attrName]"
                 }, {
                     "value": "3",
-                    "name": "innerHTML"
+                    "name": "innerHTML",
+                    "hide":"input[name=attrName]"
                 }
             ]
         }, {
@@ -151,15 +157,14 @@ var OPERATIONS = [
         "name": "设置变量",
         "desc": "新增一个变量，对后续步骤生效。变量值可从内容查找，查找方式同[查找内容]，查找失败则中断流程，也支持直接定义变量值。（只取查找结果的第一个值作为变量，之后的步骤中可以用{变量名}的方式引用变量。）[支持引用变量]",
         "check": function (data) {
+            if (!data.key) {
+                return { result: false, desc: "变量名必填", name: "key" };
+            }
             if (!data.express) {
                 return { result: false, desc: "表达式内容必填", name: "express" };
             }
-
             if (2 == data.findType && 1 == data.cssType && !data.attrName) {
                 return { result: false, desc: "元素属性名必填", name: "attrName" };
-            }
-            if (2 == data.resultType && !data.key) {
-                return { result: false, desc: "变量名必填", name: "key" };
             }
             return { result: true, desc: "Success" };
         },
@@ -170,7 +175,7 @@ var OPERATIONS = [
             "type": "input",
             "name": "key",
             "placeholder": "变量名称"
-        },{
+        }, {
             "type": "label",
             "textContent": "变量值"
         }, {
@@ -179,50 +184,111 @@ var OPERATIONS = [
             "options": [
                 {
                     "value": "1",
-                    "name": "正则表达式"
+                    "name": "正则表达式",
+                    "hide":"select[name=cssType],input[name=attrName]"
                 }, {
                     "value": "2",
-                    "name": "CSS选择器"
+                    "name": "CSS选择器",
+                    "show":"select[name=cssType],input[name=attrName]"
                 }, {
                     "value": "3",
-                    "name": "JPath"
-                    // }, {
-                    //     "value": "4",
-                    //     "name": "XPath"
+                    "name": "JPath",
+                    "hide":"select[name=cssType],input[name=attrName]"
                 }, {
                     "value": "5",
-                    "name": "自定义变量值"
+                    "name": "自定义变量值",
+                    "hide":"select[name=cssType],input[name=attrName]"
                 }
             ]
         }, {
             "type": "input",
             "name": "express",
             "placeholder": "表达式内容/变量值"
-        }, {
-            "type": "label",
-            "textContent": "CSS选择器额外操作"
-        }, {
+        },{
             "type": "select",
             "name": "cssType",
             "options": [
                 {
                     "value": "1",
-                    "name": "获取元素属性"
+                    "name": "获取元素属性",
+                    "show":"input[name=attrName]"
                 }, {
                     "value": "2",
-                    "name": "outerHTML"
+                    "name": "outerHTML",
+                    "hide":"input[name=attrName]"
                 }, {
                     "value": "3",
-                    "name": "innerHTML"
+                    "name": "innerHTML",
+                    "hide":"input[name=attrName]"
                 }
             ]
-        }, {
-            "type": "label",
-            "textContent": "元素属性名"
-        }, {
+        },{
             "type": "input",
             "name": "attrName",
             "placeholder": "获取元素属性时填写"
+        }]
+    },
+    {
+        "operate": "replaceString",
+        "name": "替换文本",
+        "desc": "对待处理内容或变量值中的文本进行替换，也可使用正则替换[支持引用变量]",
+        "check": function (data) {
+            if (!data.express) {
+                return { result: false, desc: "文本内容/正则表达式必填", name: "express" };
+            }
+
+            if (!data.target) {
+                return { result: false, desc: "变量名必填", name: "target" };
+            }
+            return { result: true, desc: "Success" };
+        },
+        "vars": [{
+            "type": "label",
+            "textContent": "将"
+        }, {
+            "type": "select",
+            "name": "replaceObj",
+            "options": [
+                {
+                    "value": "1",
+                    "name": "待处理内容",
+                    "hide":"input[name=varName]"
+                }, {
+                    "value": "2",
+                    "name": "变量",
+                    "show":"input[name=varName]"
+                }
+            ]
+        }, {
+            "type": "input",
+            "name": "varName",
+            "placeholder": "变量名"
+        }, {
+            "type": "label",
+            "textContent": "中的"
+        }, {
+            "type": "select",
+            "name": "replaceType",
+            "options": [
+                {
+                    "value": "1",
+                    "name": "正则表达式"
+                }, {
+                    "value": "2",
+                    "name": "文本"
+                }
+            ]
+        }, {
+            "type": "input",
+            "name": "express",
+            "placeholder": "文本内容/正则表达式"
+        },{
+            "type": "label",
+            "textContent": "替换为"
+        }, {
+            "type": "input",
+            "name": "target",
+            "placeholder": ""
         }]
     },
     {
