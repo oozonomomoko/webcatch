@@ -16,7 +16,7 @@
     cursor: pointer;
 }
 
-.btn:active {
+.btn:hover {
     background-color: rgb(65 71 210);
 }
 
@@ -66,9 +66,8 @@
 }
 
 .main-step {
-    border-radius: 20px;
     counter-reset: item -1;
-    border: rgb(114 118 224) 5px solid;
+    margin-bottom: 8px;
 }
 
 .top-fixed {
@@ -81,6 +80,9 @@
     width: 1000px;
     margin: 0 auto;
     padding: 10px 10px;
+}
+
+.main-menu label {
     background-color: white;
 }
 
@@ -92,6 +94,7 @@
     z-index: -1;
     border: none;
     color: white;
+    border-radius: 10px;
 }
 
 .params {
@@ -102,18 +105,42 @@
     margin-left: 5px;
     font-size: 14px;
 }
-
+.step-hug .step {
+    height: 21px;
+}
 .step {
     padding: 5px 9px;
     border: rgb(165, 165, 165) 1px solid;
     counter-increment: item;
-    transition: .4s;
+    transition: .3s;
     cursor: pointer;
-    height: 85px;
+    height: 64px;
     border-radius: 10px;
     margin: 1px auto;
     background-color: white;
     box-shadow: #828282 0 0 10px;
+    overflow: hidden;
+    margin-top: 3px;
+}
+.main-step .step{
+    animation: step-show .5s linear;
+}
+@keyframes step-show {
+    0% {
+        margin-top: 3px;
+        margin-bottom: 3px;
+        background-color: white;
+    }
+    50% {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        background-color: rgb(212 214 255);
+    }
+    100% {
+        margin-top: 3px;
+        margin-bottom: 3px;
+        background-color: white;
+    }
 }
 
 .step:before {
@@ -122,12 +149,17 @@
     top: 0;
     font-weight: bold;
 }
+.step .btn-s{
+    display: none;
+}
 
+.step:hover > button{
+    display: block;
+}
 .step:hover {
     border: rgb(186, 196, 255) 1px solid;
     background-color: rgb(235, 235, 235);
 }
-
 .description {
     font-weight: bold;
 }
@@ -235,11 +267,11 @@ input {
     cursor: pointer;
 }
 
-.pop-cancel:active {
+.pop-cancel:hover {
     background-color: rgb(194, 58, 58);
 }
 
-.pop-confirm:active {
+.pop-confirm:hover {
     background-color: rgb(78, 82, 221);
 }
 

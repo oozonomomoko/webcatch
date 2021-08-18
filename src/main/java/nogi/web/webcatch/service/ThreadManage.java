@@ -15,8 +15,6 @@ public abstract class ThreadManage {
 
     public abstract String getThreadName();
 
-
-
     /**
      * 重新初始化线程
      */

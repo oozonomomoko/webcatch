@@ -110,7 +110,8 @@ var confirmpop = function (data) {
             confirm.onclick = function () {
                 if (that.confirm)
                     that.confirm(that);
-                pop.remove();
+                else
+                    pop.remove();
             }
             document.body.appendChild(pop);
             this.pop = pop;
@@ -130,10 +131,11 @@ var hugpop = function (data) {
             main.className = data.result ? "hugpop-suc" : "hugpop-err";
             pop.appendChild(result);
             result.appendChild(main);
-            let desc = document.createElement("div");
-            desc.className = "hugpop-desc";
-            desc.textContent = data.desc ? data.desc : (data.status + ':' + data.statusText);
-            pop.appendChild(desc);
+
+            let descmain = document.createElement("div");
+            descmain.className = "hugpop-desc";
+            descmain.textContent = data.desc ? data.desc : (data.status + ':' + data.statusText);
+            pop.appendChild(descmain);
             document.body.appendChild(pop);
             setTimeout(function () {
                 pop.remove();
@@ -167,19 +169,11 @@ function addStep() {
         base.appendChild(detail);
         base.onclick = function () {
             let step = buildStepEle(operation);
-            step.style.marginTop = "10px";
-            step.style.marginBottom = "10px";
-            step.style.backgroundColor = "rgb(212 214 255)";
             if (parent) {
                 steps.insertBefore(step, parent);
             } else {
                 steps.appendChild(step);
             }
-            setTimeout(function () {
-                step.style.marginTop = "1px";
-                step.style.marginBottom = "0px";
-                step.style.backgroundColor = "";
-            }, 500);
         };
         div.appendChild(base);
     })
@@ -205,12 +199,6 @@ function buildStepEle(operation) {
     let add = document.createElement("button");
     add.className = "btn-s";
     add.textContent = "插入↑";
-    let up = document.createElement("button");
-    up.className = "btn-s";
-    up.textContent = "向上移动";
-    let down = document.createElement("button");
-    down.className = "btn-s";
-    down.textContent = "向下移动";
     let form = document.createElement("form");
     form.name = "params";
     let params = document.createElement("div");
@@ -220,9 +208,16 @@ function buildStepEle(operation) {
     base.appendChild(description);
     base.appendChild(add);
     base.appendChild(del);
-    base.appendChild(up);
-    base.appendChild(down);
     base.appendChild(form);
+
+    // let up = document.createElement("button");
+    // up.className = "btn-s";
+    // up.textContent = "向上移动";
+    // let down = document.createElement("button");
+    // down.className = "btn-s";
+    // down.textContent = "向下移动";
+    // base.appendChild(up);
+    // base.appendChild(down);
 
     let operate = document.createElement("input");
     operate.type = "hidden";
@@ -405,6 +400,7 @@ function pushSetting(configs) {
             'configs': configs,
         }),
         'success': function (data) {
+            that.pop.remove();
         },
         'error': function (data) {
             new hugpop(data).show();
@@ -447,8 +443,7 @@ String.prototype.endsWith = function (endStr) {
 function exportSteps() {
     let forms = document.querySelectorAll('#steps form');
     if (forms.length == 0) {
-        new hugpop({ result: false, desc: "未添加步骤" }).show();
-        return;
+        return "";
     }
     let steps = [];
     for (let i = 0; i < forms.length; i++) {
@@ -464,35 +459,38 @@ function exportSteps() {
         originContents: [document.getElementById("origin").value],
         steps: steps
     };
-
-    let text = document.createElement("textarea");
-    text.className = "configs-show";
-    text.readOnly = "readOnly";
-    text.spellcheck = "false";
-    text.value = JSON.stringify(config);
-    new pop({
-        titleStr: "导出步骤",
-        innerEle: text,
-    }).show();
+    return JSON.stringify(config, null, "\t");
 }
 
 function importSteps() {
+    let existStep = exportSteps();
     let stepsEle = document.getElementById("steps");
 
     let text = document.createElement("textarea");
     text.className = "configs-show";
     text.spellcheck = "false";
     text.placeholder = "输入步骤配置"
+    text.value = existStep;
     new confirmpop({
-        "titleStr": "导入步骤",
+        "titleStr": "导入/导出步骤",
         "innerEle": text,
         "confirm": function (that) {
-            if (!text.value) {
-                new hugpop({ result: false, desc: "导入失败" }).show();
+            let config;
+            try {
+                if (!text.value.trim()) {
+                    new hugpop({ result: false, desc: "输入步骤配置" }).show();
+                    return;
+                }
+                if (!text.value.trim().startsWith("{")) {
+                    new hugpop({ result: false, desc: "输入配置格式错误" }).show();
+                    return;
+                }
+                config = JSON.parse(text.value);
+            } catch (error) {
+                new hugpop({ result: false, desc: "输入配置格式错误" }).show();
                 return;
             }
             stepsEle.innerHTML = '';
-            let config = JSON.parse(text.value);
             config.steps.forEach(step => {
                 let curoperate = createCopy(OPERATIONS).filter(operate => operate.operate == step.operate)[0];
                 if (curoperate.vars) {
@@ -504,6 +502,7 @@ function importSteps() {
             });
             if (config.originContents && config.originContents.length > 0)
                 document.getElementById("origin").value = config.originContents[0];
+            that.pop.remove();
         }
     }).show();
 }
@@ -516,12 +515,5 @@ function createCopy(obj) {
 }
 
 function switchShow() {
-    let steps = document.getElementById("steps");
-    if (steps.style.height == "150px") {
-        steps.style.height = "";
-        steps.style.overflow = "";
-    } else {
-        steps.style.height = "150px";
-        steps.style.overflow = "hidden";
-    }
+    $("#steps").toggleClass("step-hug");
 }
