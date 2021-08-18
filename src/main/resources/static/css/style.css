@@ -131,7 +131,12 @@
         margin-bottom: 3px;
         background-color: white;
     }
-    50% {
+    20% {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        background-color: rgb(212 214 255);
+    }
+    80% {
         margin-top: 10px;
         margin-bottom: 10px;
         background-color: rgb(212 214 255);

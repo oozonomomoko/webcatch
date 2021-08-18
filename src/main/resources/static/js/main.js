@@ -240,7 +240,7 @@ function buildStepEle(operation) {
         step.style = variable.style;
         if (variable.type == "input") {
             step.autocomplete = "off";
-            step.spellcheck = "false";
+            step.spellcheck = false;
             step.type = "text";
             if (variable.value) {
                 step.value = variable.value;
@@ -383,6 +383,7 @@ function showSetting() {
                 "innerEle": buildSettingEle(data),
                 "confirm": function (that) {
                     pushSetting(buildConfigs(that.innerEle));
+                    that.pop.remove();
                 }
             }).show();
         },
@@ -400,7 +401,6 @@ function pushSetting(configs) {
             'configs': configs,
         }),
         'success': function (data) {
-            that.pop.remove();
         },
         'error': function (data) {
             new hugpop(data).show();
@@ -468,7 +468,7 @@ function importSteps() {
 
     let text = document.createElement("textarea");
     text.className = "configs-show";
-    text.spellcheck = "false";
+    text.spellcheck = false;
     text.placeholder = "输入步骤配置"
     text.value = existStep;
     new confirmpop({
@@ -493,6 +493,9 @@ function importSteps() {
             stepsEle.innerHTML = '';
             config.steps.forEach(step => {
                 let curoperate = createCopy(OPERATIONS).filter(operate => operate.operate == step.operate)[0];
+                if (!curoperate) {
+                    new hugpop({ result: false, desc: "未识别步骤: "+step.operate }).show();
+                }
                 if (curoperate.vars) {
                     curoperate.vars.forEach(variable => {
                         variable.value = step[variable.name];

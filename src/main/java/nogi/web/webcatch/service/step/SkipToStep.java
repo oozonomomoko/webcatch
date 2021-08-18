@@ -13,22 +13,20 @@ import java.util.Map;
  */
 @Slf4j
 @Service
-public class LoopStep extends BaseStep {
+public class SkipToStep extends BaseStep {
     @Autowired
     private CatchStarter catchStarter;
 
     @Override
     public void process(List<Map<String, String>> steps, int index, String content, Map<String, String> variables) {
         Map<String, String> operateDetail = steps.get(index);
-        // 要循环的步骤个数
-        int loopCount = Integer.parseInt(operateDetail.get("loopCount"));
-        // 先将待处理字符交给循环外下一步处理
-        catchStarter.submit(steps, index + 1, content, variables);
-        // 再返回循环起始处
-        if (index < loopCount) {
-            log.info("步骤{}，回退步骤过多，超出范围", index);
-            return;
+        // 跳转的步骤
+        int stepIdx = Integer.parseInt(operateDetail.get("stepIdx"));
+        catchStarter.submit(steps, stepIdx, content, variables);
+
+        int continueFlow = Integer.parseInt(operateDetail.get("continueFlow"));
+        if(1 == continueFlow) {
+            catchStarter.submit(steps, index + 1, content, variables);
         }
-        catchStarter.submit(steps, index - loopCount, content, variables);
     }
 }

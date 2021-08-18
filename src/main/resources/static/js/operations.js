@@ -312,25 +312,37 @@ var OPERATIONS = [
         }]
     },
     {
-        "operate": "loop",
-        "name": "步骤回退",
-        "desc": "回退指定步数以实现循环，直到循环内流程中断没有内容处理。步骤回退同时会将内容交给下一步处理",
+        "operate": "skipTo",
+        "name": "步骤跳转",
+        "desc": "跳转到指定步骤",
         "check": function (data) {
-            if (!data.loopCount) {
-                return { result: false, desc: "回退步数必填", name: "loopCount" };
+            if (!data.stepIdx) {
+                return { result: false, desc: "跳转步骤下标必填", name: "stepIdx" };
             }
-            if (isNaN(data.loopCount) || data.loopCount <= 0) {
-                return { result: false, desc: "回退步数需要填写正整数", name: "loopCount" };
+            if (isNaN(data.stepIdx) || data.stepIdx < 0) {
+                return { result: false, desc: "步骤下标需要填写正整数", name: "stepIdx" };
             }
             return { result: true, desc: "Success" };
         },
         "vars": [{
             "type": "label",
-            "textContent": "回退步数"
+            "textContent": "跳转至步骤"
         }, {
             "type": "input",
-            "name": "loopCount",
-            "placeholder": "填写步数"
+            "name": "stepIdx",
+            "placeholder": "步骤下标"
+        }, {
+            "type": "select",
+            "name": "continueFlow",
+            "options": [
+                {
+                    "value": "1",
+                    "name": "同时继续下一步骤"
+                }, {
+                    "value": "2",
+                    "name": "停止下一步骤"
+                }
+            ]
         }]
     },
     {
