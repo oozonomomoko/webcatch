@@ -17,11 +17,13 @@ public class ConfigUtil {
 
     private static void refresh() {
         try (InputStream defaultIs = ConfigUtil.class.getResourceAsStream("/default.properties");
-             InputStream configIs = ConfigUtil.class.getResourceAsStream("/config.properties")) {
+             InputStream configIs = new FileInputStream("config.properties")) {
             properties.load(defaultIs);
             if (configIs == null) {
+                log.info("未读取到配置文件：config.properties，使用默认配置");
                 return;
             }
+            log.info("读取到配置文件：config.properties");
             Properties propertiesSelf = new Properties();
             propertiesSelf.load(configIs);
             properties.putAll(propertiesSelf);
