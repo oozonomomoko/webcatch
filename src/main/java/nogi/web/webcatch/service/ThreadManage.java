@@ -20,7 +20,7 @@ public abstract class ThreadManage {
      */
     public boolean initThread() {
         String threadName = getThreadName();
-        if (WORKS != null && !WORKS.isTerminated()) {
+        if (isRunning()) {
             log.info("{}线程未停止", threadName);
             return false;
         }
@@ -31,12 +31,16 @@ public abstract class ThreadManage {
     }
 
     public boolean stopThread() {
-        if (WORKS == null || WORKS.isTerminated()) {
+        if (!isRunning()) {
             log.info("{}线程已停止", getThreadName());
             return true;
         }
         WORKS.shutdownNow();
         log.info("尝试停止{}线程...", getThreadName());
         return false;
+    }
+
+    public boolean isRunning() {
+        return WORKS != null && !WORKS.isTerminated();
     }
 }

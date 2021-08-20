@@ -229,6 +229,54 @@ var OPERATIONS = [
         }]
     },
     {
+        "operate": "operateVariable",
+        "name": "变量运算",
+        "desc": "对指定变量进行加减运算[支持引用变量]",
+        "check": function (data) {
+            if (!data.key) {
+                return { result: false, desc: "变量名必填", name: "key" };
+            }
+            if (isNaN(data.value) || !data.value) {
+                return { result: false, desc: "加减的值必填", name: "value" };
+            }
+            if (isNaN(data.max) || !data.max) {
+                return { result: false, desc: "最大值必填", name: "max" };
+            }
+            return { result: true, desc: "Success" };
+        },
+        "vars": [{
+            "type": "label",
+            "textContent": "将变量"
+        }, {
+            "type": "input",
+            "name": "key",
+            "placeholder": "变量名称"
+        }, {
+            "type": "select",
+            "name": "type",
+            "options": [
+                {
+                    "value": "1",
+                    "name": "加"
+                }, {
+                    "value": "2",
+                    "name": "减"
+                }
+            ]
+        }, {
+            "type": "input",
+            "name": "value",
+            "placeholder": "加减的值"
+        },{
+            "type": "label",
+            "textContent": "最大值限制"
+        },{
+            "type": "input",
+            "name": "max",
+            "placeholder": "填写最大值"
+        }]
+    },
+    {
         "operate": "replaceString",
         "name": "替换文本",
         "desc": "对待处理内容或变量值中的文本进行替换，也可使用正则替换[支持引用变量]",

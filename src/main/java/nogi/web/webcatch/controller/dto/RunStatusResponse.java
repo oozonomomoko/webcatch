@@ -11,6 +11,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class LogResponse extends BaseResponse{
+public class RunStatusResponse extends BaseResponse{
     private List<String> logs;
+    private boolean running;
 }

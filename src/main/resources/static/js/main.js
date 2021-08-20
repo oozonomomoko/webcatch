@@ -351,19 +351,24 @@ function stop() {
 
 $(function () {
     let print = document.getElementById("print");
+    let status =  document.getElementById("status");
     setInterval(() => {
         $.ajax({
-            'url': '/main/log.do',
+            'url': '/main/runStatus.do',
             'method': 'GET',
             'headers': {
                 Accept: "application/json; charset=UTF-8"
             },
             'success': function (data) {
-                if (data.logs.length == 0) {
-                    return;
+                if (data.logs.length != 0) {
+                    print.value += data.logs.join('\n') + '\n';
+                    print.scrollTop = print.scrollHeight
                 }
-                print.value += data.logs.join('\n') + '\n';
-                print.scrollTop = print.scrollHeight
+                if (data.running) {
+                    status.className = "running";
+                } else {
+                    status.className = "stopped";
+                }
             }
         })
     }, 1000);

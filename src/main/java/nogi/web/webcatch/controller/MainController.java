@@ -38,10 +38,10 @@ public class MainController {
     public BaseResponse start(@RequestBody StartRequest request) {
         log.info("开始爬取, request:{}", JSON.toJSONString(request));
         if (!catchStarter.initThread()) {
-            return new BaseResponse(false, "爬取任务正在执行，可点击结束停止");
+            return new BaseResponse(false, "爬取任务正在执行...");
         }
         if (!downloader.initThread()) {
-            return new BaseResponse(false, "下载任务正在执行，可点击结束停止");
+            return new BaseResponse(false, "下载任务正在执行...");
         }
 
         Downloader.headers.clear();
@@ -50,7 +50,7 @@ public class MainController {
     }
 
     /**
-     * 开始
+     * 停止
      *
      * @return
      */
@@ -71,11 +71,12 @@ public class MainController {
      *
      * @return
      */
-    @RequestMapping("/log.do")
-    public LogResponse log() {
-        LogResponse logResponse = new LogResponse();
-        logResponse.setLogs(LogListener.getLog());
-        return logResponse;
+    @RequestMapping("/runStatus.do")
+    public RunStatusResponse runStatus() {
+        RunStatusResponse statusResponse = new RunStatusResponse();
+        statusResponse.setLogs(LogListener.getLog());
+        statusResponse.setRunning(catchStarter.isRunning() || downloader.isRunning());
+        return statusResponse;
     }
 
     /**
