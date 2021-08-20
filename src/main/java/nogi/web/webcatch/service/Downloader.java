@@ -45,6 +45,7 @@ public final class Downloader extends ThreadManage {
                 Files.copy(bis, f.toPath(), StandardCopyOption.REPLACE_EXISTING);
             } catch (Exception e) {
                 log.error("download file exception.", e);
+                f.delete();
             }
         });
     }
