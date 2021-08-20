@@ -255,6 +255,8 @@ input {
 
 .pop-body {
     border-top: rgb(165, 165, 165) 1px solid;
+    max-height: 500px;
+    overflow-y: scroll;
 }
 
 .pop-bottom {

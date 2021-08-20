@@ -380,7 +380,7 @@ function showSetting() {
 
             new confirmpop({
                 "titleStr": "设置",
-                "innerEle": buildSettingEle(data),
+                "innerEle": buildSettingEle(data.configs),
                 "confirm": function (that) {
                     pushSetting(buildConfigs(that.innerEle));
                     that.pop.remove();
@@ -401,6 +401,7 @@ function pushSetting(configs) {
             'configs': configs,
         }),
         'success': function (data) {
+            new hugpop(data).show();
         },
         'error': function (data) {
             new hugpop(data).show();
@@ -415,16 +416,15 @@ function buildConfigs(innerEle) {
     })
     return configs;
 }
-function buildSettingEle(data) {
+function buildSettingEle(configs) {
     let div = document.createElement("div");
-    for (let key in data.configs) {
-        let value = data.configs[key];
+    for (let key in properties) {
         let configEle = document.createElement("div");
         let label = document.createElement("label");
-        label.textContent = key;
+        label.textContent = properties[key].key;
         let valueEle = document.createElement("input");
-        valueEle.name = key;
-        valueEle.value = value;
+        valueEle.name = properties[key].name;
+        valueEle.value = configs[properties[key].name];
         configEle.appendChild(label);
         configEle.appendChild(valueEle);
         div.appendChild(configEle);
