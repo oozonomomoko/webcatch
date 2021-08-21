@@ -3,7 +3,6 @@ package nogi.web.webcatch.service;
 import lombok.extern.slf4j.Slf4j;
 import nogi.web.webcatch.dto.Operate;
 import nogi.web.webcatch.util.ConfigUtil;
-import nogi.web.webcatch.util.RegUtil;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -36,7 +35,7 @@ public final class Downloader extends ThreadManage {
             if (f.exists() && !ConfigUtil.getBoolean("download.file.exist.cover")) {
                 return;
             }
-            log.info(Operate.OPERATE_DOWNLOAD.getOperateName() + format + "--->" + filePath);
+            log.info("[下载文件]" + format + "--->" + filePath);
             try (BufferedInputStream bis = getConnection(format).execute().bodyStream()) {
                 if (!f.getParentFile().exists()) {
                     f.getParentFile().mkdirs();
@@ -44,17 +43,22 @@ public final class Downloader extends ThreadManage {
                 // 替换已存在的文件
                 Files.copy(bis, f.toPath(), StandardCopyOption.REPLACE_EXISTING);
             } catch (Exception e) {
-                log.error("download file exception.", e);
+                log.error("download file {} exception.", format, e);
                 f.delete();
             }
         });
     }
 
-    public Document getDoc(String url) {
+    public Document getDoc(String url, String body) {
         try {
-            Connection.Response rsp = getConnection(url).execute();
+            Connection.Response rsp;
+            if (body != null) {
+                rsp = getConnection(url).requestBody(body).method(Connection.Method.POST).execute();
+            } else {
+                rsp = getConnection(url).requestBody(body).execute();
+            }
             if (rsp.statusCode() == 302) {
-                return getDoc(rsp.header("location"));
+                return getDoc(rsp.header("location"), body);
             }
             return rsp.parse();
         } catch (IOException e) {
@@ -63,13 +67,31 @@ public final class Downloader extends ThreadManage {
         return null;
     }
 
+    public String getJson(String url, String body) {
+        try {
+            Connection.Response rsp;
+            if (body != null) {
+                rsp = getConnection(url).requestBody(body).method(Connection.Method.POST).execute();
+            } else {
+                rsp = getConnection(url).requestBody(body).execute();
+            }
+            return rsp.body();
+        } catch (IOException e) {
+            log.error("get document failed:{}.", e);
+        }
+        return null;
+    }
+
     private Connection getConnection(String url) {
-        Proxy proxy = getProxy();
         Integer maxSize = ConfigUtil.getInteger("download.file.maxsize") * 1024 * 1024;
+        Integer timeout = ConfigUtil.getInteger("download.timeout.minutes") * 60 * 1000;
+        Connection connection = Jsoup.connect(url).ignoreContentType(true).headers(headers).maxBodySize(maxSize).timeout(timeout);
+
+        Proxy proxy = getProxy();
         if (null == proxy) {
-            return Jsoup.connect(url).ignoreContentType(true).headers(headers).maxBodySize(maxSize);
+            return connection;
         } else {
-            return Jsoup.connect(url).ignoreContentType(true).headers(headers).maxBodySize(maxSize).proxy(proxy);
+            return connection.proxy(proxy);
         }
     }
 

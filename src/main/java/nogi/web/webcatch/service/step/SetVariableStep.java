@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -33,7 +30,7 @@ public class SetVariableStep extends BaseStep {
         // 匹配结果第一个值作为变量
         String key = operateDetail.get("key");
         if (CollectionUtils.isEmpty(result)) {
-            log.info("步骤：{}，未找到变量：{}，原内容为：{}", index, key, content);
+            log.info("步骤：{}，未找到变量：{}", index, key);
             return;
         }
         variables.put(key, result.get(0));

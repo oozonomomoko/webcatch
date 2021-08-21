@@ -26,7 +26,8 @@ public class FindContentStep extends BaseStep {
 
         int nextIndex = index + 1;
         List<String> result = RegUtil.find(content, findType, express, cssType, attrName);
+
         // 匹配结果result给下一步处理
-        catchStarter.submit(steps, nextIndex, result, variables);
+        catchStarter.submit(steps, nextIndex, new ArrayList<>(new HashSet<>(result)), variables);
     }
 }

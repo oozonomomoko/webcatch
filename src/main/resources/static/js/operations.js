@@ -37,15 +37,15 @@ var OPERATIONS = [
                     {
                         "value": "1",
                         "name": "文件名-自动获取",
-                        "hide":"input[name=fileName]"
+                        "hide": "input[name=fileName]"
                     }, {
                         "value": "2",
                         "name": "文件名-随机",
-                        "hide":"input[name=fileName]"
+                        "hide": "input[name=fileName]"
                     }, {
                         "value": "3",
                         "name": "文件名-自定义",
-                        "show":"input[name=fileName]"
+                        "show": "input[name=fileName]"
                     }
                 ]
             }, {
@@ -59,18 +59,18 @@ var OPERATIONS = [
                     {
                         "value": "1",
                         "name": "文件类型-自动获取",
-                        "hide":"input[name=fileType]"
+                        "hide": "input[name=fileType]"
                     }, {
                         "value": "2",
                         "name": "文件类型-自定义",
-                        "show":"input[name=fileType]"
+                        "show": "input[name=fileType]"
                     }
                 ]
             }, {
                 "type": "input",
                 "name": "fileType",
                 "placeholder": "文件类型,如.jpg",
-                "style":"width:50px;"
+                "style": "width:50px;"
             }, {
                 "type": "label",
                 "textContent": "保存路径"
@@ -86,8 +86,53 @@ var OPERATIONS = [
         "name": "访问链接",
         "desc": "将内容当做链接访问，并且将结果交给下一步处理",
         "check": function (data) {
+            if (2 == data.requestType && !data.body) {
+                return { result: false, desc: "消息体内容不可为空", name: "body" };
+
+            }
             return { result: true, desc: "Success" };
-        }
+        },
+        "vars": [
+            {
+                "type": "label",
+                "textContent": "请求方式"
+            },
+            {
+                "type": "select",
+                "name": "requestType",
+                "options": [
+                    {
+                        "value": "1",
+                        "name": "Get"
+                    }, {
+                        "value": "2",
+                        "name": "Post"
+                    }
+                ]
+            },
+            {
+                "type": "input",
+                "name": "body",
+                "placeholder": "消息体内容"
+            },
+            {
+                "type": "label",
+                "textContent": "响应类型"
+            },
+            {
+                "type": "select",
+                "name": "resultType",
+                "options": [
+                    {
+                        "value": "1",
+                        "name": "html"
+                    }, {
+                        "value": "2",
+                        "name": "json"
+                    }
+                ]
+            }
+        ]
     },
     {
         "operate": "findContent",
@@ -113,37 +158,37 @@ var OPERATIONS = [
                 {
                     "value": "1",
                     "name": "正则表达式",
-                    "hide":"select[name=cssType],input[name=attrName]"
+                    "hide": "select[name=cssType],input[name=attrName]"
                 }, {
                     "value": "2",
                     "name": "CSS选择器",
-                    "show":"select[name=cssType],input[name=attrName]"
+                    "show": "select[name=cssType],input[name=attrName]"
                 }, {
                     "value": "3",
                     "name": "JPath",
-                    "hide":"select[name=cssType],input[name=attrName]"
+                    "hide": "select[name=cssType],input[name=attrName]"
                 }
             ]
         }, {
             "type": "input",
             "name": "express",
             "placeholder": "表达式内容"
-        },{
+        }, {
             "type": "select",
             "name": "cssType",
             "options": [
                 {
                     "value": "1",
                     "name": "获取元素属性",
-                    "show":"input[name=attrName]"
+                    "show": "input[name=attrName]"
                 }, {
                     "value": "2",
                     "name": "outerHTML",
-                    "hide":"input[name=attrName]"
+                    "hide": "input[name=attrName]"
                 }, {
                     "value": "3",
                     "name": "innerHTML",
-                    "hide":"input[name=attrName]"
+                    "hide": "input[name=attrName]"
                 }
             ]
         }, {
@@ -185,44 +230,44 @@ var OPERATIONS = [
                 {
                     "value": "1",
                     "name": "正则表达式",
-                    "hide":"select[name=cssType],input[name=attrName]"
+                    "hide": "select[name=cssType],input[name=attrName]"
                 }, {
                     "value": "2",
                     "name": "CSS选择器",
-                    "show":"select[name=cssType],input[name=attrName]"
+                    "show": "select[name=cssType],input[name=attrName]"
                 }, {
                     "value": "3",
                     "name": "JPath",
-                    "hide":"select[name=cssType],input[name=attrName]"
+                    "hide": "select[name=cssType],input[name=attrName]"
                 }, {
                     "value": "5",
                     "name": "自定义变量值",
-                    "hide":"select[name=cssType],input[name=attrName]"
+                    "hide": "select[name=cssType],input[name=attrName]"
                 }
             ]
         }, {
             "type": "input",
             "name": "express",
             "placeholder": "表达式内容/变量值"
-        },{
+        }, {
             "type": "select",
             "name": "cssType",
             "options": [
                 {
                     "value": "1",
                     "name": "获取元素属性",
-                    "show":"input[name=attrName]"
+                    "show": "input[name=attrName]"
                 }, {
                     "value": "2",
                     "name": "outerHTML",
-                    "hide":"input[name=attrName]"
+                    "hide": "input[name=attrName]"
                 }, {
                     "value": "3",
                     "name": "innerHTML",
-                    "hide":"input[name=attrName]"
+                    "hide": "input[name=attrName]"
                 }
             ]
-        },{
+        }, {
             "type": "input",
             "name": "attrName",
             "placeholder": "获取元素属性时填写"
@@ -239,8 +284,11 @@ var OPERATIONS = [
             if (isNaN(data.value) || !data.value) {
                 return { result: false, desc: "加减的值必填", name: "value" };
             }
-            if (isNaN(data.max) || !data.max) {
-                return { result: false, desc: "最大值必填", name: "max" };
+            if (data.value < 0) {
+                return { result: false, desc: "值不可为负数", name: "value" };
+            }
+            if (isNaN(data.limit) || !data.limit) {
+                return { result: false, desc: "最大/最小值必填", name: "limit" };
             }
             return { result: true, desc: "Success" };
         },
@@ -267,13 +315,13 @@ var OPERATIONS = [
             "type": "input",
             "name": "value",
             "placeholder": "加减的值"
-        },{
+        }, {
             "type": "label",
             "textContent": "最大值限制"
-        },{
+        }, {
             "type": "input",
-            "name": "max",
-            "placeholder": "填写最大值"
+            "name": "limit",
+            "placeholder": "填写最大/最小值"
         }]
     },
     {
@@ -300,11 +348,11 @@ var OPERATIONS = [
                 {
                     "value": "1",
                     "name": "待处理内容",
-                    "hide":"input[name=varName]"
+                    "hide": "input[name=varName]"
                 }, {
                     "value": "2",
                     "name": "变量",
-                    "show":"input[name=varName]"
+                    "show": "input[name=varName]"
                 }
             ]
         }, {
@@ -330,7 +378,7 @@ var OPERATIONS = [
             "type": "input",
             "name": "express",
             "placeholder": "文本内容/正则表达式"
-        },{
+        }, {
             "type": "label",
             "textContent": "替换为"
         }, {
@@ -364,17 +412,27 @@ var OPERATIONS = [
         "name": "步骤跳转",
         "desc": "跳转到指定步骤",
         "check": function (data) {
-            if (!data.stepIdx) {
-                return { result: false, desc: "跳转步骤下标必填", name: "stepIdx" };
-            }
-            if (isNaN(data.stepIdx) || data.stepIdx < 0) {
-                return { result: false, desc: "步骤下标需要填写正整数", name: "stepIdx" };
+            if (1== data.skipType) {
+                if (isNaN(data.stepIdx) || data.stepIdx < 0) {
+                    return { result: false, desc: "步骤下标需要填写正整数", name: "stepIdx" };
+                }
             }
             return { result: true, desc: "Success" };
         },
         "vars": [{
-            "type": "label",
-            "textContent": "跳转至步骤"
+            "type": "select",
+            "name": "skipType",
+            "options": [
+                {
+                    "value": "1",
+                    "name": "跳转至",
+                    "show": "input[name=stepIdx],select[name=continueFlow]"
+                }, {
+                    "value": "2",
+                    "name": "停止步骤",
+                    "hide": "input[name=stepIdx],select[name=continueFlow]"
+                }
+            ]
         }, {
             "type": "input",
             "name": "stepIdx",
@@ -472,6 +530,48 @@ var OPERATIONS = [
             "type": "input",
             "name": "value",
             "placeholder": "例如 application/json"
+        }]
+    },
+    {
+        "operate": "logContent",
+        "name": "打印内容",
+        "desc": "打印待处理内容/变量",
+        "check": function (data) {
+            if (2 == data.type && !data.key) {
+                return { result: false, desc: "变量名必填", name: "key" };
+            }
+            return { result: true, desc: "Success" };
+        },
+        "vars": [{
+            "type": "select",
+            "name": "type",
+            "options": [
+                {
+                    "value": "1",
+                    "name": "打印待处理内容",
+                    "hide": "input[name=key]"
+                }, {
+                    "value": "2",
+                    "name": "打印变量",
+                    "show": "input[name=key]"
+                }
+            ]
+        }, {
+            "type": "input",
+            "name": "key",
+            "placeholder": "变量名"
+        }, {
+            "type": "select",
+            "name": "continueFlow",
+            "options": [
+                {
+                    "value": "1",
+                    "name": "停止下一步骤"
+                }, {
+                    "value": "2",
+                    "name": "继续下一步骤"
+                }
+            ]
         }]
     }
 

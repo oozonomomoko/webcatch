@@ -369,6 +369,9 @@ $(function () {
                 } else {
                     status.className = "stopped";
                 }
+            },
+            'error':function(){
+                status.className = "stopped";
             }
         })
     }, 1000);

@@ -29,7 +29,6 @@ public class LogListener {
             @Override
             public void handle(String line) {
                 if (line == null || line.equals("")) {
-                    log.warn("should not read empty line.");
                     return;
                 }
                 if (logTemp.size() > 10000) {

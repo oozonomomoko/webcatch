@@ -21,11 +21,17 @@ public class SkipToStep extends BaseStep {
     public void process(List<Map<String, String>> steps, int index, String content, Map<String, String> variables) {
         Map<String, String> operateDetail = steps.get(index);
         // 跳转的步骤
+        int skipType = Integer.parseInt(operateDetail.get("skipType"));
+        if (skipType == 2) {
+            log.info("步骤{}，结束");
+            return;
+        }
         int stepIdx = Integer.parseInt(operateDetail.get("stepIdx"));
+
         catchStarter.submit(steps, stepIdx, content, variables);
 
         int continueFlow = Integer.parseInt(operateDetail.get("continueFlow"));
-        if(1 == continueFlow) {
+        if (1 == continueFlow) {
             catchStarter.submit(steps, index + 1, content, variables);
         }
     }

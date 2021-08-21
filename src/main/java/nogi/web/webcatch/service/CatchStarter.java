@@ -32,6 +32,7 @@ public class CatchStarter extends ThreadManage {
 
     public void submit(List<Map<String, String>> steps, int index, List<String> contents, Map<String, String> variables) {
         if (steps.size() <= index || index < 0) {
+            log.info("步骤：{}，下标超出步骤数", index);
             return;
         }
         Map<String, String> operateDetail = steps.get(index);

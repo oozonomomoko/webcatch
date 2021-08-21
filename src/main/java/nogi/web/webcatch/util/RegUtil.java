@@ -78,7 +78,12 @@ public class RegUtil {
     }
 
     private static List<String> findByJpath(String content, String express) {
-        String text = Jsoup.parse(content).body().text();
+        String text;
+        if (content.trim().startsWith("{") || content.trim().startsWith("[")) {
+            text = content;
+        } else {
+            text = Jsoup.parse(content).body().text();
+        }
         Object eval = JSONPath.eval(JSON.parseObject(text), express);
         if (eval == null) {
             return null;

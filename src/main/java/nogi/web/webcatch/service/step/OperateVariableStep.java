@@ -20,7 +20,7 @@ public class OperateVariableStep extends BaseStep {
         int type = Integer.parseInt(operateDetail.get("type"));
         String key = operateDetail.get("key");
         long value = Long.parseLong(operateDetail.get("value"));
-        long max = Long.parseLong(operateDetail.get("max"));
+        long limit = Long.parseLong(operateDetail.get("limit"));
 
         long oriValue;
         String oriValueStr = variables.get(key);
@@ -29,15 +29,19 @@ public class OperateVariableStep extends BaseStep {
         } else {
             oriValue = Long.parseLong(oriValueStr);
         }
-        if (oriValue > max) {
-            log.info("步骤：{}，变量{}达到最大值{}", index, key, max);
-            return;
-        }
         long result;
-        if (1==type) {
+        if (1 == type) {
             result = oriValue + value;
+            if (result > limit) {
+                log.info("步骤：{}，变量{}达到最大值{}", index, key, limit);
+                return;
+            }
         } else {
             result = oriValue - value;
+            if (result < limit) {
+                log.info("步骤：{}，变量{}达到最小值{}", index, key, limit);
+                return;
+            }
         }
 
         variables.put(key, String.valueOf(result));
