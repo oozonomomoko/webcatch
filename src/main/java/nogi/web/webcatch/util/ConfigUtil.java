@@ -16,7 +16,17 @@ public class ConfigUtil {
     }
 
     private static void refresh() {
+            try {
+                File file = new File("/config.properties");
+                if (!file.exists()) {
+                    file.mkdirs();
+                    file.createNewFile();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         try (InputStream defaultIs = ConfigUtil.class.getResourceAsStream("/default.properties");
+
              InputStream configIs = new FileInputStream("config.properties")) {
             properties.load(defaultIs);
             if (configIs == null) {

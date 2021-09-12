@@ -10,7 +10,6 @@ body{
     background-color: rgb(114 118 224);
     color: white;
     border: rgb(114, 114, 114) 1px solid;
-    border-radius: 5px;
     min-width: 80px;
     min-height: 35px;
     font-size: medium;
