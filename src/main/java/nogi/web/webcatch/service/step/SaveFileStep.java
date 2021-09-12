@@ -31,7 +31,7 @@ public class SaveFileStep extends BaseStep {
         String downloadDir = VarUtil.replaceVar(operateDetail.get("downloadDir"), variables);
 
         String finalName = getNameFromUrl(content, fileNameFrom, fileName, fileTypeFrom, fileType, variables);
-        String filePath = downloadDir + "\\" + finalName;
+        String filePath = downloadDir + "/" + finalName;
         filePath = RegUtil.getLegalName(filePath);
         downloader.download(content, filePath);
     }

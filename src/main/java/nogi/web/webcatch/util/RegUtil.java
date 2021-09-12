@@ -42,12 +42,13 @@ public class RegUtil {
     private static final Pattern illegal = Pattern.compile("[\\\\\\n\\r/\\*<>|]|((?<!^\\w):)");
 
     public static String getLegalName(String fileName) {
-        String[] split = fileName.split("\\\\");
+        fileName = fileName.replace("\\", "/");
+        String[] split = fileName.split("/");
         List<String> result = new ArrayList<>();
         for (String sp : split) {
             result.add(illegal.matcher(sp).replaceAll(""));
         }
-        return StringUtil.join(result, "\\");
+        return StringUtil.join(result, "/");
     }
 
     /**
